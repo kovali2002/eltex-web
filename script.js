@@ -1,6 +1,7 @@
 const btnShowForm = document.getElementById('btn-show-form');
 const btnCancel = document.getElementById('btn-cancel');
 const btnSave = document.getElementById('btn-save');
+const addArticleForm = document.getElementById('add-article-form'); // Получаем форму
 const formWrap = document.getElementById('article-form-wrap');
 const articleTitle = document.getElementById('article-title');
 const articleText = document.getElementById('article-text');
@@ -11,18 +12,22 @@ const statsDialog = document.getElementById('stats-dialog');
 const dialogClose = document.getElementById('dialog-close');
 const statsCount = document.getElementById('stats-count');
 
+// Показ формы
 btnShowForm.addEventListener('click', () => {
     formWrap.classList.add('visible');
     formWrap.scrollIntoView({ behavior: 'smooth' });
 });
 
+// Отмена: скрытие и очистка формы
 btnCancel.addEventListener('click', () => {
     formWrap.classList.remove('visible');
-    articleTitle.value = '';
-    articleText.value = '';
+    addArticleForm.reset(); // Сбрасываем форму методом reset()
 });
 
-btnSave.addEventListener('click', () => {
+// Сохранение статьи
+btnSave.addEventListener('click', (e) => {
+    e.preventDefault(); // Предотвращаем перезагрузку страницы
+
     const title = articleTitle.value.trim();
     const text = articleText.value.trim();
 
@@ -39,13 +44,25 @@ btnSave.addEventListener('click', () => {
         year: 'numeric'
     });
 
-    blogGrid.appendChild(clone);
+    // Добавляем новую статью в начало сетки
+    blogGrid.prepend(clone);
 
+    // Скрываем и сбрасываем форму
     formWrap.classList.remove('visible');
-    articleTitle.value = '';
-    articleText.value = '';
+    addArticleForm.reset();
 });
 
+// Удаление статьи (делегирование событий)
+blogGrid.addEventListener('click', (e) => {
+    if (e.target.classList.contains('delete-btn')) {
+        const articleCard = e.target.closest('.blog-card');
+        if (articleCard) {
+            articleCard.remove();
+        }
+    }
+});
+
+// Статистика
 function countArticles() {
     return document.querySelectorAll('.blog-card').length;
 }

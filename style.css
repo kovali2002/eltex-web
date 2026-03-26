@@ -641,6 +641,7 @@ footer {
   border-radius: 12px;
   overflow: hidden;
   height: 320px;
+  position: relative;
 }
 
 .blog-featured-image {
@@ -1043,4 +1044,32 @@ dialog h2 {
 
 .blog-card:hover .delete-btn {
     opacity: 1;
+}
+
+.blog-featured:hover .delete-btn {
+    opacity: 1;
+}
+
+#stats-dialog {
+    position: fixed;
+    
+    top: 50%;
+    left: 50%;
+    
+    transform: translate(-50%, -50%);
+    
+    margin: 0;
+    
+    width: 442px;
+    background: #1e1e2f;
+    border: none;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    outline: none; 
+}
+
+#stats-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+    position: fixed;
 }

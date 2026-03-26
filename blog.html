@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Блог</title>
+    <title>Блог | Kovali-folio</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
 </head>
@@ -49,13 +49,11 @@
     </header>
 
     <main>
-
         <section id="blog-hero">
             <div class="blog-hero-inner">
                 <div class="blog-hero-text">
                     <h1>My blogs</h1>
-                    <p>Lorem occaecat proident excepteur commodo et nulla eiusmod.
-                        Elit esse aute officia dolor elit aute</p>
+                    <p>Здесь я делюсь своим опытом в разработке, учёбе в СибГУТИ и личными проектами.</p>
                 </div>
                 <div class="blog-hero-circle">
                     <img src="assets/images/blogs-circle.png" alt="My blogs" />
@@ -64,21 +62,19 @@
         </section>
 
         <section id="blog-articles">
-
             <article class="blog-featured">
+                <button type="button" class="delete-btn" aria-label="Удалить статью">✕</button>
                 <div class="blog-featured-image">
                     <img src="assets/images/Selection.png" alt="Статья" />
                 </div>
                 <div class="blog-featured-text">
                     <h2>Как я начал изучать iOS-разработку и прошёл интенсив ШИФТ</h2>
-                    <p>Расскажу о своём опыте прохождения интенсива ШИФТ в ЦФТ:
-                        как проходило обучение, что изучали и что получилось в итоге.</p>
+                    <p>Расскажу о своём опыте прохождения интенсива ШИФТ в ЦФТ: как проходило обучение, что изучали и что получилось в итоге.</p>
                     <time datetime="2025-01-10">Jan 10, 2025</time>
                 </div>
             </article>
 
             <div class="blog-grid" id="blog-grid">
-
                 <article class="blog-card">
                     <button type="button" class="delete-btn" aria-label="Удалить статью">✕</button>
                     <div class="blog-card-image">
@@ -144,7 +140,6 @@
                         <time datetime="2025-03-15">Mar 15, 2025</time>
                     </div>
                 </article>
-
             </div>
 
             <div class="browse-btn-wrap">
@@ -169,7 +164,6 @@
                 </div>
             </form>
         </div>
-
     </main>
 
     <template id="blog-card-template">
@@ -190,17 +184,10 @@
             <div class="footer-left">
                 <h2>Say hello and let's<br />work together !</h2>
                 <p>Email: <a href="mailto:kovali94738@yandex.ru">kovali94738@yandex.ru</a></p>
-                <p>Телефон: <a href="tel:+79999999999">+7 (999) 123-45-67</a></p>
                 <div class="footer-socials">
-                    <a href="https://vk.com/griga_niga">
-                        <img src="assets/images/vk.png" alt="VK" />
-                    </a>
-                    <a href="https://t.me/kovali94738">
-                        <img src="assets/images/tg.png" alt="Telegram" />
-                    </a>
-                    <a href="https://github.com/kovali2002">
-                        <img src="assets/images/github.png" alt="GitHub" />
-                    </a>
+                    <a href="https://vk.com/griga_niga"><img src="assets/images/vk.png" alt="VK" /></a>
+                    <a href="https://t.me/kovali94738"><img src="assets/images/tg.png" alt="Telegram" /></a>
+                    <a href="https://github.com/kovali2002"><img src="assets/images/github.png" alt="GitHub" /></a>
                 </div>
             </div>
             <div class="footer-right">
@@ -213,10 +200,9 @@
                 </form>
             </div>
         </div>
-        <p class="footer-copy">© 2026 Brand, Inc</p>
+        <p class="footer-copy">© 2026 Grisha Kovalev</p>
     </footer>
 
     <script src="script.js"></script>
-
 </body>
 </html>

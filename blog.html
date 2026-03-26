@@ -1,96 +1,158 @@
 <!DOCTYPE html>
 <html lang="ru">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Блог</title>
-    </head>
 
-    <body>
-        <header>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Блог</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <header>
+        <div class="nav-inner">
+            <span class="logo">Kovali-folio</span>
             <nav>
                 <ul>
-                    <li><a href="index.html">Главная</a></li>
-                    <li><a href="blog.html">Блог</a></li>
+                    <li><a href="index.html#about">About me</a></li>
+                    <li><a href="blog.html" class="nav-active">Blog</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
                 </ul>
             </nav>
-        </header>
+        </div>
+    </header>
 
-        <main>
-            <section id="articles">
-                <h1>Статьи</h1>
+    <main>
 
-                <article>
-                    <h2>Как я начал изучать iOS-разработку</h2>
-                    <p><time datetime="2025-01-10">Опубликовано: 10 января 2025</time></p>
-                    <p>
-                    Расскажу о своём опыте прохождения интенсива ШИФТ в ЦФТ:
-                    как проходило обучение, что изучали и что получилось в итоге.
-                    </p>
-                </article>
-
-                <article>
-                    <h2>Git для начинающих: основные команды</h2>
-                    <p><time datetime="2025-02-05">Опубликовано: 5 февраля 2025</time></p>
-                    <p>
-                    Разбираем базовые команды Git которые нужны каждый день:
-                    init, add, commit, push, pull, branch и merge.
-                    </p>
-                </article>
-
-                <article>
-                    <h2>Первые шаги в HTML: структура страницы</h2>
-                    <p><time datetime="2025-03-01">Опубликовано: 1 марта 2025</time></p>
-                    <p>
-                    Что такое DOCTYPE, зачем нужен head, чем отличаются
-                    семантические теги от div — объясняю простыми словами.
-                    </p>
-                </article>
-
-                <article>
-                    <h2>Семантические теги HTML: зачем они нужны</h2>
-                    <p><time datetime="2025-03-05">Опубликовано: 5 марта 2025</time></p>
-                    <p>
-                    Разбираем разницу между div и section, article, header, footer.
-                    Почему семантика важна для SEO и доступности сайта.
-                    </p>
-                </article>
-
-                <article>
-                    <h2>Aurora OS: опыт бета-тестирования</h2>
-                    <p><time datetime="2025-03-08">Опубликовано: 8 марта 2025</time></p>
-                    <p>
-                    Делюсь впечатлениями от участия в программе бета-тестирования
-                    российской мобильной ОС Aurora. Что тестировал, как писал баг-репорты.
-                    </p>
-                </article>
-            </section>
-
-            <section id="create-article">
-                <h2>Создать статью</h2>
-                <div>
-                    <input type="text" placeholder="Заголовок" />
+        <section id="blog-hero">
+            <div class="blog-hero-inner">
+                <div class="blog-hero-text">
+                    <h1>My blogs</h1>
+                    <p>Lorem occaecat proident excepteur commodo et nulla eiusmod.
+                        Elit esse aute officia dolor elit aute</p>
                 </div>
-                <div>
-                    <textarea placeholder="Текст статьи"></textarea>
+                <div class="blog-hero-circle">
+                    <img src="assets/images/blogs-circle.png" alt="My blogs" />
                 </div>
-                <div>
-                    <button type="button">Добавить</button>
-                </div>
-            </section>
-        </main>
+            </div>
+        </section>
 
-        <footer>
-            <h2>Контакты</h2>
-            <p>Email: <a href="mailto:kovali94738@yandex.ru">kovali94738@yandex.ru</a></p>
-            <p>Telegram: <a href="https://t.me/kovali94738">@kovali94738</a></p>
-            <p>📍 Бердск, Новосибирская область</p>
-                <h3>Социальные сети:</h3>
-                <p>
-                <a href="https://github.com/kovali2002">GitHub</a> |
-                <a href="https://t.me/kovali94738">Telegram</a> |
-                <a href="https://vk.com/griga_niga">VK</a>
-                </p>
-        </footer>
-    </body>
+        <section id="blog-articles">
+            <article class="blog-featured">
+                <div class="blog-featured-image">
+                    <img src="assets/images/Selection.png" alt="Статья" />
+                </div>
+                <div class="blog-featured-text">
+                    <h2>Как я начал изучать iOS-разработку и прошёл интенсив ШИФТ</h2>
+                    <p>Расскажу о своём опыте прохождения интенсива ШИФТ в ЦФТ:
+                        как проходило обучение, что изучали и что получилось в итоге.</p>
+                    <time datetime="2025-01-10">Jan 10, 2025</time>
+                </div>
+            </article>
+
+            <div class="blog-grid">
+
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <img src="assets/images/Selection.png" alt="Статья" />
+                    </div>
+                    <div class="blog-card-content">
+                        <h3>Git для начинающих: основные команды</h3>
+                        <time datetime="2025-02-05">Feb 5, 2025</time>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <img src="assets/images/Selection.png" alt="Статья" />
+                    </div>
+                    <div class="blog-card-content">
+                        <h3>Первые шаги в HTML: структура страницы</h3>
+                        <time datetime="2025-03-01">Mar 1, 2025</time>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <img src="assets/images/Selection.png" alt="Статья" />
+                    </div>
+                    <div class="blog-card-content">
+                        <h3>Семантические теги HTML: зачем они нужны</h3>
+                        <time datetime="2025-03-05">Mar 5, 2025</time>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <img src="assets/images/Selection.png" alt="Статья" />
+                    </div>
+                    <div class="blog-card-content">
+                        <h3>Aurora OS: опыт бета-тестирования</h3>
+                        <time datetime="2025-03-08">Mar 8, 2025</time>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <img src="assets/images/Selection.png" alt="Статья" />
+                    </div>
+                    <div class="blog-card-content">
+                        <h3>CSS Flexbox: как выравнивать элементы</h3>
+                        <time datetime="2025-03-10">Mar 10, 2025</time>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <img src="assets/images/Selection.png" alt="Статья" />
+                    </div>
+                    <div class="blog-card-content">
+                        <h3>CSS Grid: сетки для вёрстки</h3>
+                        <time datetime="2025-03-15">Mar 15, 2025</time>
+                    </div>
+                </article>
+
+            </div>
+
+            <div class="browse-btn-wrap">
+                <a href="#" class="btn-outline">Next →</a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="contact">
+        <div class="footer-inner">
+            <div class="footer-left">
+                <h2>Say hello and let's<br />work together !</h2>
+                <p>Email: <a href="mailto:kovali94738@yandex.ru">kovali94738@yandex.ru</a></p>
+                <p>Телефон: <a href="tel:+79999999999">+7 (999) 123-45-67</a></p>
+                <div class="footer-socials">
+                    <a href="https://vk.com/griga_niga">
+                        <img src="assets/images/vk.png" alt="VK" />
+                    </a>
+                    <a href="https://t.me/kovali94738">
+                        <img src="assets/images/tg.png" alt="Telegram" />
+                    </a>
+                    <a href="https://github.com/kovali2002">
+                        <img src="assets/images/github.png" alt="GitHub" />
+                    </a>
+                </div>
+            </div>
+            <div class="footer-right">
+                <form>
+                    <label>Email</label>
+                    <input type="email" placeholder="Your email address" />
+                    <label>Input your message</label>
+                    <textarea placeholder="Describe your project"></textarea>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+        <p class="footer-copy">© 2026 Brand, Inc</p>
+    </footer>
+
+</body>
+
 </html>

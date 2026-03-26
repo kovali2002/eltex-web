@@ -10,14 +10,40 @@
 </head>
 
 <body>
+
+    <aside class="admin-panel">
+        <button class="admin-btn" id="btn-show-form" title="Создать статью">
+            <img src="assets/images/icon-add.png" alt="Создать статью" />
+        </button>
+        <button class="admin-btn" id="btn-show-stats" title="Показать статистику">
+            <img src="assets/images/icon-stats.png" alt="Статистика" />
+        </button>
+    </aside>
+
+    <dialog id="stats-dialog">
+        <button class="dialog-close" id="dialog-close">✕</button>
+        <p class="dialog-label">статистика страницы</p>
+        <h2>Статистика страницы</h2>
+        <div class="stats-grid">
+            <div class="stats-card">
+                <p>Всего статей:</p>
+                <span id="stats-count">0</span>
+            </div>
+            <div class="stats-card">
+                <p>Комментарии:</p>
+                <span id="stats-comments">0</span>
+            </div>
+        </div>
+    </dialog>
+
     <header>
         <div class="nav-inner">
             <span class="logo">Kovali-folio</span>
             <nav>
                 <ul>
-                    <li><a href="index.html#about">About me</a></li>
+                    <li><a href="index.html">About me</a></li>
                     <li><a href="blog.html" class="nav-active">Blog</a></li>
-                    <li><a href="index.html#contact">Contact</a></li>
+                    <li><a href="index.html">Contact</a></li>
                 </ul>
             </nav>
         </div>
@@ -39,6 +65,7 @@
         </section>
 
         <section id="blog-articles">
+
             <article class="blog-featured">
                 <div class="blog-featured-image">
                     <img src="assets/images/Selection.png" alt="Статья" />
@@ -51,7 +78,7 @@
                 </div>
             </article>
 
-            <div class="blog-grid">
+            <div class="blog-grid" id="blog-grid">
 
                 <article class="blog-card">
                     <div class="blog-card-image">
@@ -120,7 +147,37 @@
             </div>
         </section>
 
+        <div class="article-form-wrap" id="article-form-wrap">
+            <div class="article-form">
+                <h2>Добавить статью</h2>
+                <div class="form-field">
+                    <label for="article-title">Заголовок</label>
+                    <input type="text" id="article-title" placeholder="Заголовок статьи" required />
+                </div>
+                <div class="form-field">
+                    <label for="article-text">Текст статьи</label>
+                    <textarea id="article-text" placeholder="Текст статьи" required></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button class="btn-save" id="btn-save">Добавить</button>
+                    <button class="btn-cancel" id="btn-cancel">Отмена</button>
+                </div>
+            </div>
+        </div>
+
     </main>
+
+    <template id="blog-card-template">
+        <article class="blog-card">
+            <div class="blog-card-image">
+                <img src="assets/images/Selection.png" alt="Статья" />
+            </div>
+            <div class="blog-card-content">
+                <h3></h3>
+                <time></time>
+            </div>
+        </article>
+    </template>
 
     <footer id="contact">
         <div class="footer-inner">
@@ -153,6 +210,7 @@
         <p class="footer-copy">© 2026 Brand, Inc</p>
     </footer>
 
-</body>
+    <script src="script.js"></script>
 
+</body>
 </html>

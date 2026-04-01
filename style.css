@@ -8,6 +8,20 @@ html {
   scroll-behavior: auto;
 }
 
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+
 :root {
   --color-dark: #2d3047;
   --color-gray: #666666;
@@ -1072,4 +1086,20 @@ dialog h2 {
 #stats-dialog::backdrop {
     background: rgba(0, 0, 0, 0.6);
     position: fixed;
+}
+
+/*  Пустое состояние блога (нет статей)  */
+.no-articles-state {
+    display: flex;               
+    align-items: center;
+    justify-content: center;
+    max-width: 1176px;
+    margin: 0 auto 40px;
+    min-height: 200px;
+    border-radius: 12px;
+}
+
+.no-articles-state p {
+    font-size: 16px;
+    color: var(--color-gray);
 }

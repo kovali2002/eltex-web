@@ -1,70 +1,189 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Основные элементы интерфейса
-    const blogArticles = document.getElementById('blog-articles');
+
+    //  Константы 
+    const STORAGE_KEY = 'kovali-blog-articles';
+
+    //  Начальные статьи (seed) 
+    const INITIAL_ARTICLES = [
+        {
+            id: 1,
+            title: 'Как я начал изучать iOS-разработку и прошёл интенсив ШИФТ',
+            text: 'Расскажу о своём опыте прохождения интенсива ШИФТ в ЦФТ: как проходило обучение, что изучали и что получилось в итоге.',
+            date: 'Jan 10, 2025',
+            isoDate: '2025-01-10',
+        },
+        {
+            id: 2,
+            title: 'Git для начинающих: основные команды',
+            text: '',
+            date: 'Feb 5, 2025',
+            isoDate: '2025-02-05',
+        },
+        {
+            id: 3,
+            title: 'Первые шаги в HTML: структура страницы',
+            text: '',
+            date: 'Mar 1, 2025',
+            isoDate: '2025-03-01',
+        },
+        {
+            id: 4,
+            title: 'Семантические теги HTML: зачем они нужны',
+            text: '',
+            date: 'Mar 5, 2025',
+            isoDate: '2025-03-05',
+        },
+        {
+            id: 5,
+            title: 'Aurora OS: опыт бета-тестирования',
+            text: '',
+            date: 'Mar 8, 2025',
+            isoDate: '2025-03-08',
+        },
+        {
+            id: 6,
+            title: 'CSS Flexbox: как выравнивать элементы',
+            text: '',
+            date: 'Mar 10, 2025',
+            isoDate: '2025-03-10',
+        },
+        {
+            id: 7,
+            title: 'CSS Grid: сетки для вёрстки',
+            text: '',
+            date: 'Mar 15, 2025',
+            isoDate: '2025-03-15',
+        },
+    ];
+
+    //  Элементы интерфейса 
+    const blogArticlesSection = document.getElementById('blog-articles');
     const blogGrid = document.getElementById('blog-grid');
+    const noArticlesState = document.getElementById('no-articles-state');
     const formWrap = document.getElementById('article-form-wrap');
     const template = document.getElementById('blog-card-template');
 
-    // Кнопки управления
     const btnShowForm = document.getElementById('btn-show-form');
     const btnCancel = document.getElementById('btn-cancel');
     const btnSave = document.getElementById('btn-save');
 
-    // Поля формы
     const articleTitle = document.getElementById('article-title');
     const articleText = document.getElementById('article-text');
 
-    // Элементы статистики
     const btnShowStats = document.getElementById('btn-show-stats');
     const statsDialog = document.getElementById('stats-dialog');
     const dialogClose = document.getElementById('dialog-close');
     const statsCount = document.getElementById('stats-count');
+    const browseBtnWrap = document.querySelector('.browse-btn-wrap');
 
-    // 1. УДАЛЕНИЕ СТАТЕЙ
-    blogArticles.addEventListener('click', (e) => {
-        if (e.target.classList.contains('delete-btn')) {
-            const article = e.target.closest('article');
-            if (!article) return;
 
-            if (confirm('Вы уверены, что хотите удалить эту статью?')) {
-                // Если удаляем ГЛАВНУЮ статью
-                if (article.classList.contains('blog-featured')) {
-                    const nextArticle = blogGrid.querySelector('.blog-card');
+    // ─── LocalStorage helpers ─────────────────────────────────────
 
-                    if (nextArticle) {
-                        // Переносим данные из первой маленькой карточки в главную
-                        const newImgSrc = nextArticle.querySelector('img').src;
-                        const newTitle = nextArticle.querySelector('h3').textContent;
-                        const newTimeDate = nextArticle.querySelector('time').getAttribute('datetime');
-                        const newTimeText = nextArticle.querySelector('time').textContent;
-
-                        article.querySelector('img').src = newImgSrc;
-                        article.querySelector('h2').textContent = newTitle;
-                        
-                        const featuredTime = article.querySelector('time');
-                        featuredTime.setAttribute('datetime', newTimeDate);
-                        featuredTime.textContent = newTimeText;
-
-                        // Скрываем описание, так как у маленьких карточек его нет
-                        const featuredDesc = article.querySelector('p');
-                        if (featuredDesc) featuredDesc.style.display = 'none';
-
-                        // Удаляем маленькую карточку, которую "подняли" наверх
-                        nextArticle.remove();
-                    } else {
-                        // Если маленьких карточек нет, удаляем главную совсем
-                        article.remove();
-                    }
-                } else {
-                    // Если удаляем обычную карточку из сетки
-                    article.remove();
-                }
-            }
+    function getArticles() {
+        try {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        } catch {
+            return [];
         }
+    }
+
+    function saveArticles(articles) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(articles));
+    }
+
+    // Записываем начальные статьи только если ключа ещё не существует.
+    // Если пользователь удалил все статьи — ключ есть (пустой массив), seed не повторяется.
+    function initStorage() {
+        if (localStorage.getItem(STORAGE_KEY) === null) {
+            saveArticles(INITIAL_ARTICLES);
+        }
+    }
+
+    //  Рендеринг 
+
+    function renderArticles() {
+        const articles = getArticles();
+
+        const existingFeatured = blogArticlesSection.querySelector('.blog-featured');
+        if (existingFeatured) existingFeatured.remove();
+
+        blogGrid.innerHTML = '';
+
+        if (articles.length === 0) {
+            noArticlesState.style.display = 'flex';
+            browseBtnWrap.style.display = 'none';  
+            return;
+        }
+
+
+        noArticlesState.style.display = 'none';
+        browseBtnWrap.style.display = 'block'; 
+
+
+        blogArticlesSection.insertBefore(
+            createFeaturedElement(articles[0]),
+            noArticlesState
+        );
+
+        for (let i = 1; i < articles.length; i++) {
+            blogGrid.appendChild(createCardElement(articles[i]));
+        }
+    }
+
+    function createFeaturedElement(article) {
+        const el = document.createElement('article');
+        el.className = 'blog-featured';
+        el.dataset.articleId = article.id;
+        el.innerHTML = `
+            <button type="button" class="delete-btn" aria-label="Удалить статью">✕</button>
+            <div class="blog-featured-image">
+                <img src="assets/images/Selection.png" alt="Статья" />
+            </div>
+            <div class="blog-featured-text">
+                <h2>${escapeHtml(article.title)}</h2>
+                ${article.text ? `<p>${escapeHtml(article.text)}</p>` : ''}
+                <time datetime="${article.isoDate}">${article.date}</time>
+            </div>
+        `;
+        return el;
+    }
+
+    function createCardElement(article) {
+        const clone = template.content.cloneNode(true);
+        const cardEl = clone.querySelector('article');
+        cardEl.dataset.articleId = article.id;
+        clone.querySelector('h3').textContent = article.title;
+        const timeEl = clone.querySelector('time');
+        timeEl.textContent = article.date;
+        timeEl.setAttribute('datetime', article.isoDate);
+        return clone;
+    }
+
+    function escapeHtml(str) {
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    //  Удаление статьи 
+
+    blogArticlesSection.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('delete-btn')) return;
+
+        const article = e.target.closest('article');
+        if (!article) return;
+
+        if (!confirm('Вы уверены, что хотите удалить эту статью?')) return;
+
+        const id = Number(article.dataset.articleId);
+        saveArticles(getArticles().filter(a => a.id !== id));
+        renderArticles();
     });
 
-    // ДОБАВЛЕНИЕ НОВОЙ СТАТЬИ
-     
+    //  Добавление новой статьи 
+
     btnSave.addEventListener('click', (e) => {
         e.preventDefault();
 
@@ -77,65 +196,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const dateObj = new Date();
-        const formattedDate = dateObj.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-        });
-        const isoDate = dateObj.toISOString().split('T')[0];
+        const newArticle = {
+            id: Date.now(),
+            title,
+            text,
+            date: dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            isoDate: dateObj.toISOString().split('T')[0],
+        };
 
-        const featured = document.querySelector('.blog-featured');
+        const articles = getArticles();
+        articles.unshift(newArticle);
+        saveArticles(articles);
 
-        if (featured) {
-            // 1. Копируем данные ТЕКУЩЕЙ главной статьи в новую маленькую карточку
-            const currentImg = featured.querySelector('img').src;
-            const currentTitle = featured.querySelector('h2').textContent;
-            const currentTime = featured.querySelector('time');
-
-            const clone = template.content.cloneNode(true);
-            clone.querySelector('img').src = currentImg;
-            clone.querySelector('h3').textContent = currentTitle;
-            clone.querySelector('time').textContent = currentTime.textContent;
-            clone.querySelector('time').setAttribute('datetime', currentTime.getAttribute('datetime'));
-
-            // Вставляем её в начало сетки
-            blogGrid.prepend(clone);
-
-            // 2. Обновляем ГЛАВНУЮ статью данными из формы
-            featured.querySelector('h2').textContent = title;
-            
-            let desc = featured.querySelector('p');
-            if (!desc) {
-                desc = document.createElement('p');
-                featured.querySelector('.blog-featured-text').insertBefore(desc, featured.querySelector('time'));
-            }
-            desc.textContent = text;
-            desc.style.display = 'block';
-
-            const featuredTime = featured.querySelector('time');
-            featuredTime.textContent = formattedDate;
-            featuredTime.setAttribute('datetime', isoDate);
-        } else {
-            // Если главной статьи не существует, создаем её структуру
-            blogArticles.insertAdjacentHTML('afterbegin', `
-                <article class="blog-featured">
-                    <button type="button" class="delete-btn" aria-label="Удалить статью">✕</button>
-                    <div class="blog-featured-image">
-                        <img src="assets/images/Selection.png" alt="Статья" />
-                    </div>
-                    <div class="blog-featured-text">
-                        <h2>${title}</h2>
-                        <p>${text}</p>
-                        <time datetime="${isoDate}">${formattedDate}</time>
-                    </div>
-                </article>
-            `);
-        }
-
+        renderArticles();
         closeForm();
     });
 
-    // УПРАВЛЕНИЕ ФОРМОЙ
+    //  Управление формой 
 
     function closeForm() {
         formWrap.classList.remove('visible');
@@ -150,21 +227,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnCancel.addEventListener('click', closeForm);
 
-    // 4. СТАТИСТИКА
-    function countArticles() {
-        // Считаем и главную, и карточки в сетке
-        return document.querySelectorAll('.blog-card, .blog-featured').length;
-    }
+    //  Статистика 
 
     btnShowStats.addEventListener('click', () => {
-        statsCount.textContent = countArticles();
+        statsCount.textContent = getArticles().length;
         statsDialog.showModal();
     });
 
     dialogClose.addEventListener('click', () => statsDialog.close());
 
-    // Закрытие диалога кликом по фону
     statsDialog.addEventListener('click', (e) => {
         if (e.target === statsDialog) statsDialog.close();
     });
+
+    //  Инициализация 
+    initStorage();
+    renderArticles();
 });

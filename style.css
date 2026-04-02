@@ -1088,7 +1088,7 @@ dialog h2 {
     position: fixed;
 }
 
-/*  Пустое состояние блога (нет статей)  */
+/* Пустое состояние блога (нет статей)  */
 .no-articles-state {
     display: flex;               
     align-items: center;
@@ -1102,4 +1102,46 @@ dialog h2 {
 .no-articles-state p {
     font-size: 16px;
     color: var(--color-gray);
+}
+
+
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 0;
+    width: 100%;
+}
+
+/* Крутящийся спиннер */
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid var(--color-light-gray);
+    border-bottom-color: var(--color-accent-green);
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Визуальное отключение элементов формы (disabled) */
+.form-field input:disabled,
+.form-field textarea:disabled {
+    background-color: #f7f7f7;
+    color: #888888;
+    cursor: not-allowed;
+    border-color: #eaeaea;
+}
+
+.btn-save:disabled,
+.btn-cancel:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none; /* Защита от случайных кликов */
 }

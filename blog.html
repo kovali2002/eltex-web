@@ -62,85 +62,16 @@
         </section>
 
         <section id="blog-articles">
-            <article class="blog-featured">
-                <button type="button" class="delete-btn" aria-label="Удалить статью">✕</button>
-                <div class="blog-featured-image">
-                    <img src="assets/images/Selection.png" alt="Статья" />
-                </div>
-                <div class="blog-featured-text">
-                    <h2>Как я начал изучать iOS-разработку и прошёл интенсив ШИФТ</h2>
-                    <p>Расскажу о своём опыте прохождения интенсива ШИФТ в ЦФТ: как проходило обучение, что изучали и что получилось в итоге.</p>
-                    <time datetime="2025-01-10">Jan 10, 2025</time>
-                </div>
-            </article>
 
-            <div class="blog-grid" id="blog-grid">
-                <article class="blog-card">
-                    <button type="button" class="delete-btn" aria-label="Удалить статью">✕</button>
-                    <div class="blog-card-image">
-                        <img src="assets/images/Selection.png" alt="Статья" />
-                    </div>
-                    <div class="blog-card-content">
-                        <h3>Git для начинающих: основные команды</h3>
-                        <time datetime="2025-02-05">Feb 5, 2025</time>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <button type="button" class="delete-btn" aria-label="Удалить статью">✕</button>
-                    <div class="blog-card-image">
-                        <img src="assets/images/Selection.png" alt="Статья" />
-                    </div>
-                    <div class="blog-card-content">
-                        <h3>Первые шаги в HTML: структура страницы</h3>
-                        <time datetime="2025-03-01">Mar 1, 2025</time>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <button type="button" class="delete-btn" aria-label="Удалить статью">✕</button>
-                    <div class="blog-card-image">
-                        <img src="assets/images/Selection.png" alt="Статья" />
-                    </div>
-                    <div class="blog-card-content">
-                        <h3>Семантические теги HTML: зачем они нужны</h3>
-                        <time datetime="2025-03-05">Mar 5, 2025</time>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <button type="button" class="delete-btn" aria-label="Удалить статью">✕</button>
-                    <div class="blog-card-image">
-                        <img src="assets/images/Selection.png" alt="Статья" />
-                    </div>
-                    <div class="blog-card-content">
-                        <h3>Aurora OS: опыт бета-тестирования</h3>
-                        <time datetime="2025-03-08">Mar 8, 2025</time>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <button type="button" class="delete-btn" aria-label="Удалить статью">✕</button>
-                    <div class="blog-card-image">
-                        <img src="assets/images/Selection.png" alt="Статья" />
-                    </div>
-                    <div class="blog-card-content">
-                        <h3>CSS Flexbox: как выравнивать элементы</h3>
-                        <time datetime="2025-03-10">Mar 10, 2025</time>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <button type="button" class="delete-btn" aria-label="Удалить статью">✕</button>
-                    <div class="blog-card-image">
-                        <img src="assets/images/Selection.png" alt="Статья" />
-                    </div>
-                    <div class="blog-card-content">
-                        <h3>CSS Grid: сетки для вёрстки</h3>
-                        <time datetime="2025-03-15">Mar 15, 2025</time>
-                    </div>
-                </article>
+            <!-- Состояние пустого блога — показывается когда статей нет -->
+            <div class="no-articles-state" id="no-articles-state">
+                <p>Нет статей</p>
             </div>
+
+            <!-- Главная (featured) статья — вставляется JS-ом -->
+
+            <!-- Сетка карточек — заполняется JS-ом -->
+            <div class="blog-grid" id="blog-grid"></div>
 
             <div class="browse-btn-wrap">
                 <a href="#" class="btn-outline">Next →</a>

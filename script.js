@@ -75,9 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const dialogClose = document.getElementById('dialog-close');
     const statsCount = document.getElementById('stats-count');
     const browseBtnWrap = document.querySelector('.browse-btn-wrap');
+    
+    // Элемент лоадера
+    const loaderContainer = document.getElementById('loader-container');
 
-
-    // ─── LocalStorage helpers ─────────────────────────────────────
 
     function getArticles() {
         try {
@@ -182,37 +183,21 @@ document.addEventListener('DOMContentLoaded', () => {
         renderArticles();
     });
 
-    //  Добавление новой статьи 
-
-    btnSave.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        const title = articleTitle.value.trim();
-        const text = articleText.value.trim();
-
-        if (!title || !text) {
-            alert('Заполните все поля');
-            return;
-        }
-
-        const dateObj = new Date();
-        const newArticle = {
-            id: Date.now(),
-            title,
-            text,
-            date: dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-            isoDate: dateObj.toISOString().split('T')[0],
-        };
-
-        const articles = getArticles();
-        articles.unshift(newArticle);
-        saveArticles(articles);
-
-        renderArticles();
-        closeForm();
-    });
-
     //  Управление формой 
+    
+    // Функция для блокировки/разблокировки формы
+    function setFormDisabled(isDisabled) {
+        articleTitle.disabled = isDisabled;
+        articleText.disabled = isDisabled;
+        btnSave.disabled = isDisabled;
+        btnCancel.disabled = isDisabled;
+
+        if (isDisabled) {
+            btnSave.textContent = 'Сохранение...';
+        } else {
+            btnSave.textContent = 'Добавить';
+        }
+    }
 
     function closeForm() {
         formWrap.classList.remove('visible');
@@ -226,6 +211,45 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     btnCancel.addEventListener('click', closeForm);
+
+    //  Добавление новой статьи 
+
+    btnSave.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const title = articleTitle.value.trim();
+        const text = articleText.value.trim();
+
+        if (!title || !text) {
+            alert('Заполните все поля');
+            return;
+        }
+
+        // Блокируем форму перед отправкой данных
+        setFormDisabled(true);
+
+        // Имитируем запрос на сервер (1 секунда)
+        setTimeout(() => {
+            const dateObj = new Date();
+            const newArticle = {
+                id: Date.now(),
+                title,
+                text,
+                date: dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                isoDate: dateObj.toISOString().split('T')[0],
+            };
+
+            const articles = getArticles();
+            articles.unshift(newArticle);
+            saveArticles(articles);
+
+            renderArticles();
+            closeForm();
+            
+            // Разблокируем форму после успешного сохранения
+            setFormDisabled(false);
+        }, 1000); 
+    });
 
     //  Статистика 
 
@@ -241,6 +265,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     //  Инициализация 
+    function loadInitialArticles() {
+        // Скрываем элементы контента перед "загрузкой"
+        blogGrid.style.display = 'none';
+        noArticlesState.style.display = 'none';
+        browseBtnWrap.style.display = 'none';
+        const featured = blogArticlesSection.querySelector('.blog-featured');
+        if (featured) featured.style.display = 'none';
+
+        // Показываем лоадер
+        loaderContainer.style.display = 'flex';
+
+        // Имитируем загрузку (1.5 секунды)
+        setTimeout(() => {
+            loaderContainer.style.display = 'none'; // Скрываем лоадер
+            blogGrid.style.display = 'grid'; // Возвращаем стили сетке
+            renderArticles(); // Рендерим статьи
+        }, 1500); 
+    }
+
     initStorage();
-    renderArticles();
+    loadInitialArticles();
 });

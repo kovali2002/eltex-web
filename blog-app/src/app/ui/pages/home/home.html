@@ -1,12 +1,10 @@
-<!-- ── Hero / About ───────────────────────────────────── -->
 <section id="about">
   <div class="hero-inner">
     <div class="hero-text">
       <h1>Привет! Я Григорий,<br />Junior Developer</h1>
       <p>
-        Студент 3 курса СибГУТИ, начинающий разработчик из Бердска.
-        Прошёл интенсивный курс iOS-разработки, активно изучаю
-        веб-технологии и backend.
+        Студент 3 курса СибГУТИ, начинающий разработчик из Бердска. Прошёл интенсивный курс
+        iOS-разработки, активно изучаю веб-технологии и backend.
       </p>
       <a href="#contact" class="hero-link">More about me <span>›</span></a>
     </div>
@@ -19,25 +17,7 @@
   </div>
 </section>
 
-<section id="articles">
-  <div class="articles-list">
-    @for (article of articles; track article.title) {
-      <article class="article-card" [class]="article.cardClass">
-        <div class="article-card-text">
-          <span class="article-tag" [class]="article.tagClass">{{ article.tag }}</span>
-          <h3>{{ article.title }}</h3>
-          <p>{{ article.text }}</p>
-        </div>
-        <div class="article-card-image">
-          <img src="images/Selection.png" alt="Статья" />
-        </div>
-      </article>
-    }
-  </div>
-  <div class="browse-btn-wrap">
-    <a href="blog.html" class="btn-outline">Browse all posts</a>
-  </div>
-</section>
+<app-home-articles [articles]="articles" />
 
 <section id="skills">
   <h2>My skills</h2>
@@ -73,8 +53,8 @@
   <div class="hobby-header">
     <h2>Hobby projects</h2>
     <p>
-      Duis nisi do exercitation in irure aliqua commodo nisi eu id
-      reprehenderit dolore fugiat consectetur irure labore est ea.
+      Duis nisi do exercitation in irure aliqua commodo nisi eu id reprehenderit dolore fugiat
+      consectetur irure labore est ea.
     </p>
   </div>
   <div class="hobby-grid">
@@ -86,6 +66,7 @@
         </div>
       </div>
     }
+
     <div class="hobby-stack">
       @for (item of hobbyStack; track item.label) {
         <div class="hobby-card">

@@ -1,0 +1,48 @@
+<aside class="admin-panel">
+  <button type="button" class="admin-btn" title="Создать статью" (click)="toggleForm()">
+    <img src="images/icon-add.png" alt="Создать статью" />
+  </button>
+  <button type="button" class="admin-btn" title="Показать статистику" (click)="toggleStats()">
+    <img src="images/icon-stats.png" alt="Статистика" />
+  </button>
+</aside>
+
+<dialog #statsDialog id="stats-dialog" (click)="handleDialogClick($event)">
+  <button type="button" class="dialog-close" (click)="closeStats()">✕</button>
+  <h2>Статистика страницы</h2>
+  <div class="stats-grid">
+    <div class="stats-card">
+      <p>Всего статей:</p>
+      <span>{{ totalCount() }}</span>
+    </div>
+    <div class="stats-card">
+      <p>Комментарии:</p>
+      <span>0</span>
+    </div>
+  </div>
+</dialog>
+
+<section id="blog-hero">
+  <div class="blog-hero-inner">
+    <div class="blog-hero-text">
+      <h1>My blogs</h1>
+      <p>Здесь я делюсь своим опытом в разработке, учёбе в СибГУТИ и личными проектами.</p>
+    </div>
+    <div class="blog-hero-circle">
+      <img src="images/blogs-circle.png" alt="My blogs" />
+    </div>
+  </div>
+</section>
+
+<app-blog-articles
+  [featuredArticle]="featuredArticle()"
+  [articles]="regularArticles()"
+  (deleteArticle)="deleteArticle($event)"
+/>
+
+<app-article-form
+  [visible]="showForm()"
+  [isSubmitting]="isSubmitting()"
+  (submitArticle)="addArticle($event)"
+  (cancel)="closeForm()"
+/>

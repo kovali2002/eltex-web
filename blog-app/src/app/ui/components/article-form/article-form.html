@@ -1,0 +1,35 @@
+<section class="article-form-wrap" [class.visible]="visible()">
+  <form class="article-form" [formGroup]="form" (ngSubmit)="submit()">
+    <h2>Добавить статью</h2>
+
+    <div class="form-field">
+      <label for="article-title">Заголовок</label>
+      <input
+        id="article-title"
+        type="text"
+        formControlName="title"
+        placeholder="Заголовок статьи"
+        [disabled]="isSubmitting()"
+      />
+    </div>
+
+    <div class="form-field">
+      <label for="article-text">Текст статьи</label>
+      <textarea
+        id="article-text"
+        formControlName="text"
+        placeholder="Текст статьи"
+        [disabled]="isSubmitting()"
+      ></textarea>
+    </div>
+
+    <div class="form-buttons">
+      <button type="submit" class="btn-save" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Сохранение...' : 'Добавить' }}
+      </button>
+      <button type="button" class="btn-cancel" [disabled]="isSubmitting()" (click)="cancel.emit()">
+        Отмена
+      </button>
+    </div>
+  </form>
+</section>

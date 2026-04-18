@@ -1,0 +1,30 @@
+<section id="articles">
+  <div class="articles-list">
+    @for (article of articles(); track article.title) {
+      <article
+        class="article-card"
+        [class.article-card--red]="article.theme === 'red'"
+        [class.article-card--green]="article.theme === 'green'"
+      >
+        <div class="article-card-text">
+          <span
+            class="article-tag"
+            [class.article-tag--red]="article.theme === 'red'"
+            [class.article-tag--green]="article.theme === 'green'"
+          >
+            {{ article.tag }}
+          </span>
+          <h3>{{ article.title }}</h3>
+          <p>{{ article.text }}</p>
+        </div>
+        <div class="article-card-image">
+          <img [src]="article.image" alt="Статья" />
+        </div>
+      </article>
+    }
+  </div>
+
+  <div class="browse-btn-wrap">
+    <a routerLink="/blog" class="btn-outline">Browse all posts</a>
+  </div>
+</section>

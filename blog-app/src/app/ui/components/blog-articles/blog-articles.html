@@ -1,0 +1,52 @@
+<section id="blog-articles">
+  <div class="loader-container" style="display: none">
+    <span class="loader"></span>
+  </div>
+
+  @if (!featuredArticle()) {
+    <div class="no-articles-state">
+      <p>Нет статей</p>
+    </div>
+  }
+
+  @if (featuredArticle(); as article) {
+    <article class="blog-featured">
+      <button type="button" class="delete-btn" aria-label="Удалить статью" (click)="deleteArticle.emit(article.id)">
+        ✕
+      </button>
+      <div class="blog-featured-image">
+        <img [src]="article.image" alt="Статья" />
+      </div>
+      <div class="blog-featured-text">
+        <h2>{{ article.title }}</h2>
+        @if (article.text) {
+          <p>{{ article.text }}</p>
+        }
+        <time [attr.datetime]="article.isoDate">{{ article.dateLabel }}</time>
+      </div>
+    </article>
+  }
+
+  @if (articles().length) {
+    <div class="blog-grid">
+      @for (article of articles(); track article.id) {
+        <article class="blog-card">
+          <button type="button" class="delete-btn" aria-label="Удалить статью" (click)="deleteArticle.emit(article.id)">
+            ✕
+          </button>
+          <div class="blog-card-image">
+            <img [src]="article.image" alt="Статья" />
+          </div>
+          <div class="blog-card-content">
+            <h3>{{ article.title }}</h3>
+            <time [attr.datetime]="article.isoDate">{{ article.dateLabel }}</time>
+          </div>
+        </article>
+      }
+    </div>
+
+    <div class="browse-btn-wrap">
+      <a href="#" class="btn-outline">Next →</a>
+    </div>
+  }
+</section>

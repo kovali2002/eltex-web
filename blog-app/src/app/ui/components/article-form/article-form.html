@@ -1,31 +1,39 @@
 <section class="article-form-wrap" [class.visible]="visible()">
   <form class="article-form" [formGroup]="form" (ngSubmit)="submit()">
-    <h2>Добавить статью</h2>
+    <h2>{{ formTitle }}</h2>
 
     <div class="form-field">
       <label for="article-title">Заголовок</label>
       <input
         id="article-title"
         type="text"
+        class="form-control"
         formControlName="title"
         placeholder="Заголовок статьи"
-        [disabled]="isSubmitting()"
+        [class.form-control--invalid]="isFieldInvalid(titleControl)"
       />
+      @if (getTitleError()) {
+        <span class="form-error">{{ getTitleError() }}</span>
+      }
     </div>
 
     <div class="form-field">
       <label for="article-text">Текст статьи</label>
       <textarea
         id="article-text"
+        class="form-control"
         formControlName="text"
         placeholder="Текст статьи"
-        [disabled]="isSubmitting()"
+        [class.form-control--invalid]="isFieldInvalid(textControl)"
       ></textarea>
+      @if (getTextError()) {
+        <span class="form-error">{{ getTextError() }}</span>
+      }
     </div>
 
     <div class="form-buttons">
-      <button type="submit" class="btn-save" [disabled]="isSubmitting()">
-        {{ isSubmitting() ? 'Сохранение...' : 'Добавить' }}
+      <button type="submit" class="btn-save" [disabled]="isSubmitting() || form.invalid">
+        {{ submitButtonLabel }}
       </button>
       <button type="button" class="btn-cancel" [disabled]="isSubmitting()" (click)="cancel.emit()">
         Отмена

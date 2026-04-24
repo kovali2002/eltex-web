@@ -774,7 +774,7 @@ footer {
 }
 
 .article-form-wrap.visible {
-  max-height: 500px;
+  max-height: 720px;
 }
 
 .article-form {
@@ -815,6 +815,10 @@ footer {
   color: var(--color-dark);
 }
 
+.form-control--invalid {
+  border-color: #dc3545 !important;
+}
+
 .form-field input::placeholder,
 .form-field textarea::placeholder {
   color: #aaaaaa;
@@ -823,6 +827,12 @@ footer {
 .form-field textarea {
   height: 120px;
   resize: vertical;
+}
+
+.form-error {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #dc3545;
 }
 
 .form-buttons {
@@ -927,39 +937,57 @@ dialog h2 {
   color: white;
 }
 
-.blog-card {
+.blog-card,
+.blog-featured {
   position: relative;
 }
 
-.delete-btn {
+.article-actions {
   position: absolute;
   top: 12px;
   right: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.article-card-action {
   width: 28px;
   height: 28px;
-  background-color: rgba(220, 53, 69, 0.85);
   color: white;
   border: none;
   border-radius: 50%;
   font-size: 14px;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.3s ease, background-color 0.2s ease;
+  transition: opacity 0.3s ease, background-color 0.2s ease, transform 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
+}
+
+.article-card-action:hover {
+  transform: translateY(-1px);
+}
+
+.edit-btn {
+  background-color: rgba(76, 175, 80, 0.9);
+}
+
+.edit-btn:hover {
+  background-color: rgb(76, 175, 80);
+}
+
+.delete-btn {
+  background-color: rgba(220, 53, 69, 0.85);
 }
 
 .delete-btn:hover {
   background-color: rgb(220, 53, 69);
 }
 
-.blog-card:hover .delete-btn {
-  opacity: 1;
-}
-
-.blog-featured:hover .delete-btn {
+.blog-card:hover .article-card-action,
+.blog-featured:hover .article-card-action {
   opacity: 1;
 }
 
@@ -1148,5 +1176,9 @@ textarea {
 
   #blog-articles {
     padding: 20px 20px 0;
+  }
+
+  .article-card-action {
+    opacity: 1;
   }
 }

@@ -11,4 +11,5 @@ export class BlogArticles {
   public readonly featuredArticle = input<BlogArticle | null>(null);
   public readonly articles = input.required<ReadonlyArray<BlogArticle>>();
   public readonly deleteArticle = output<number>();
+  public readonly editArticle = output<BlogArticle>();
 }

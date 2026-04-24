@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
   styleUrl: './footer.scss',
 })
 export class Footer {
-  preventSubmit(event: Event): void {
+  protected preventSubmit(event: Event): void {
     event.preventDefault();
   }
 }

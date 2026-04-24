@@ -1,7 +1,7 @@
 import { effect } from '@angular/core';
 import { Component, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NewArticleDraft } from '../../../article.model';
+import { NewArticleDraft } from '../../../types/article.types';
 
 @Component({
   selector: 'app-article-form',
@@ -11,12 +11,12 @@ import { NewArticleDraft } from '../../../article.model';
   styleUrl: './article-form.scss',
 })
 export class ArticleForm {
-  readonly isSubmitting = input(false);
-  readonly visible = input(false);
-  readonly submitArticle = output<NewArticleDraft>();
-  readonly cancel = output<void>();
+  public readonly isSubmitting = input(false);
+  public readonly visible = input(false);
+  public readonly submitArticle = output<NewArticleDraft>();
+  public readonly cancel = output<void>();
 
-  readonly form = new FormGroup({
+  protected readonly form = new FormGroup({
     title: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(3)],
@@ -38,7 +38,7 @@ export class ArticleForm {
     });
   }
 
-  submit(): void {
+  protected submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;

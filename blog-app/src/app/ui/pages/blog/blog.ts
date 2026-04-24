@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild, computed, inject, signal } from '@angular/core';
-import { NewArticleDraft } from '../../../article.model';
+import { NewArticleDraft } from '../../../types/article.types';
 import { BlogArticlesStore } from '../../../blog-articles.store';
 import { ArticleForm } from '../../components/article-form/article-form';
 import { BlogArticles } from '../../components/blog-articles/blog-articles';
@@ -16,23 +16,23 @@ export class Blog {
 
   private readonly blogArticlesStore = inject(BlogArticlesStore);
 
-  readonly featuredArticle = this.blogArticlesStore.featuredArticle;
-  readonly regularArticles = this.blogArticlesStore.regularArticles;
-  readonly totalCount = computed(() => this.blogArticlesStore.articles().length);
-  readonly showForm = signal(false);
-  readonly isSubmitting = signal(false);
+  protected readonly featuredArticle = this.blogArticlesStore.featuredArticle;
+  protected readonly regularArticles = this.blogArticlesStore.regularArticles;
+  protected readonly totalCount = computed(() => this.blogArticlesStore.articles().length);
+  protected readonly showForm = signal(false);
+  protected readonly isSubmitting = signal(false);
 
-  toggleForm(): void {
+  protected toggleForm(): void {
     this.showForm.update((value) => !value);
   }
 
-  closeForm(): void {
+  protected closeForm(): void {
     if (!this.isSubmitting()) {
       this.showForm.set(false);
     }
   }
 
-  toggleStats(): void {
+  protected toggleStats(): void {
     const dialog = this.statsDialog?.nativeElement;
 
     if (!dialog) {
@@ -47,17 +47,17 @@ export class Blog {
     dialog.showModal();
   }
 
-  closeStats(): void {
+  protected closeStats(): void {
     this.statsDialog?.nativeElement.close();
   }
 
-  handleDialogClick(event: MouseEvent): void {
+  protected handleDialogClick(event: MouseEvent): void {
     if (event.target === this.statsDialog?.nativeElement) {
       this.closeStats();
     }
   }
 
-  addArticle(draft: NewArticleDraft): void {
+  protected addArticle(draft: NewArticleDraft): void {
     this.isSubmitting.set(true);
 
     globalThis.setTimeout(() => {
@@ -67,7 +67,7 @@ export class Blog {
     }, 1000);
   }
 
-  deleteArticle(id: number): void {
+  protected deleteArticle(id: number): void {
     this.blogArticlesStore.removeArticle(id);
   }
 }

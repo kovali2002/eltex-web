@@ -1,4 +1,4 @@
-import { BlogArticle } from './article.model';
+import { BlogArticle } from './types/article.types';
 
 export const INITIAL_ARTICLES: BlogArticle[] = [
   {

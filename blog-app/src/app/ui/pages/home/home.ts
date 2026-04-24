@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HomeArticlePreview } from '../../../article.model';
+import { HomeArticlePreview } from '../../../types/article.types';
 import { HomeArticles } from '../../components/home-articles/home-articles';
 
 @Component({
@@ -10,7 +10,7 @@ import { HomeArticles } from '../../components/home-articles/home-articles';
   styleUrl: './home.scss',
 })
 export class Home {
-  readonly skills = [
+  protected readonly skills = [
     'Swift / UIKit / SwiftUI',
     'HTML / CSS',
     'Angular',
@@ -19,7 +19,7 @@ export class Home {
     'Figma',
   ];
 
-  readonly workItems = [
+  protected readonly workItems = [
     {
       icon: 'images/work-icon-1.png',
       period: 'СибГУТИ — (2022 - н.в.)',
@@ -40,29 +40,27 @@ export class Home {
     },
   ];
 
-  readonly articles: HomeArticlePreview[] = [
+  protected readonly articles: HomeArticlePreview[] = [
     {
       tag: 'iOS',
-      theme: 'red',
       title: 'Как я начал изучать iOS-разработку',
       text: 'Расскажу о своём опыте прохождения интенсива ШИФТ в ЦФТ: как проходило обучение, что изучали и что получилось в итоге.',
       image: 'images/Selection.png',
     },
     {
       tag: 'Git',
-      theme: 'green',
       title: 'Git для начинающих: основные команды',
       text: 'Разбираем базовые команды Git которые нужны каждый день: init, add, commit, push, pull, branch и merge.',
       image: 'images/Selection.png',
     },
   ];
 
-  readonly hobbyProjects = [
+  protected readonly hobbyProjects = [
     { image: 'images/hobby-1.png', label: 'iOS приложение' },
     { image: 'images/hobby-2.png', label: 'Портфолио сайт' },
   ];
 
-  readonly hobbyStack = [
+  protected readonly hobbyStack = [
     { image: 'images/Selection.png', label: 'Aurora OS' },
     { image: 'images/Selection.png', label: 'Java проект' },
   ];

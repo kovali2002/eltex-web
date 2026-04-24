@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { HomeArticlePreview } from '../../../article.model';
+import { HomeArticlePreview } from '../../../types/article.types';
 
 @Component({
   selector: 'app-home-articles',
@@ -10,5 +10,5 @@ import { HomeArticlePreview } from '../../../article.model';
   styleUrl: './home-articles.scss',
 })
 export class HomeArticles {
-  readonly articles = input.required<ReadonlyArray<HomeArticlePreview>>();
+  public readonly articles = input.required<ReadonlyArray<HomeArticlePreview>>();
 }

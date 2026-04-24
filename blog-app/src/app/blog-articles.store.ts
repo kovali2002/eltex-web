@@ -1,7 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { INITIAL_ARTICLES } from './articles.seed';
-import { BlogArticle, NewArticleDraft } from './article.model';
+import { BlogArticle, NewArticleDraft } from './types/article.types';
 
 @Injectable({ providedIn: 'root' })
 export class BlogArticlesStore {
@@ -9,9 +9,9 @@ export class BlogArticlesStore {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly articlesState = signal<BlogArticle[]>(cloneArticles(INITIAL_ARTICLES));
 
-  readonly articles = this.articlesState.asReadonly();
-  readonly featuredArticle = computed(() => this.articlesState()[0] ?? null);
-  readonly regularArticles = computed(() => this.articlesState().slice(1));
+  public readonly articles = this.articlesState.asReadonly();
+  public readonly featuredArticle = computed(() => this.articlesState()[0] ?? null);
+  public readonly regularArticles = computed(() => this.articlesState().slice(1));
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -19,7 +19,7 @@ export class BlogArticlesStore {
     }
   }
 
-  addArticle(draft: NewArticleDraft): void {
+  public addArticle(draft: NewArticleDraft): void {
     const createdAt = new Date();
     const newArticle: BlogArticle = {
       id: Date.now(),
@@ -41,7 +41,7 @@ export class BlogArticlesStore {
     this.persist();
   }
 
-  removeArticle(id: number): void {
+  public removeArticle(id: number): void {
     this.articlesState.update((articles) => articles.filter((article) => article.id !== id));
     this.persist();
   }

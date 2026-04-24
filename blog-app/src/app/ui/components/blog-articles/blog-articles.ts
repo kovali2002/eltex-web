@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { BlogArticle } from '../../../article.model';
+import { BlogArticle } from '../../../types/article.types';
 
 @Component({
   selector: 'app-blog-articles',
@@ -8,7 +8,7 @@ import { BlogArticle } from '../../../article.model';
   styleUrl: './blog-articles.scss',
 })
 export class BlogArticles {
-  readonly featuredArticle = input<BlogArticle | null>(null);
-  readonly articles = input.required<ReadonlyArray<BlogArticle>>();
-  readonly deleteArticle = output<number>();
+  public readonly featuredArticle = input<BlogArticle | null>(null);
+  public readonly articles = input.required<ReadonlyArray<BlogArticle>>();
+  public readonly deleteArticle = output<number>();
 }

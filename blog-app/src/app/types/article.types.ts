@@ -17,7 +17,6 @@ export interface HomeArticlePreview {
   title: string;
   text: string;
   image: string;
-  theme: ArticleTheme;
 }
 
 export interface NewArticleDraft {

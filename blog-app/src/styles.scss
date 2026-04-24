@@ -191,16 +191,6 @@ nav ul li a:hover {
   cursor: pointer;
 }
 
-.article-card--red {
-  background-color: #fff5f0;
-  cursor: pointer;
-}
-
-.article-card--green {
-  background-color: #f0fff5;
-  cursor: pointer;
-}
-
 .article-card-text {
   flex: 0 0 344px;
   padding: 40px 32px;
@@ -215,16 +205,6 @@ nav ul li a:hover {
   text-transform: capitalize;
   display: block;
   margin-bottom: 12px;
-  cursor: pointer;
-}
-
-.article-tag--red {
-  color: #e8572a;
-  cursor: pointer;
-}
-
-.article-tag--green {
-  color: var(--color-accent-green);
   cursor: pointer;
 }
 

@@ -13,6 +13,7 @@ import { BlogArticles } from '../../components/blog-articles/blog-articles';
 })
 export class Blog {
   @ViewChild('statsDialog') private statsDialog?: ElementRef<HTMLDialogElement>;
+  @ViewChild('articleFormElement', { read: ElementRef }) private articleFormElement?: ElementRef<HTMLElement>;
 
   private readonly blogArticlesStore = inject(BlogArticlesStore);
 
@@ -94,6 +95,7 @@ export class Blog {
 
     this.editingArticle.set(article);
     this.showForm.set(true);
+    this.scrollToArticleForm();
   }
 
   protected submitArticle(draft: NewArticleDraft): void {
@@ -119,5 +121,24 @@ export class Blog {
     }
 
     this.blogArticlesStore.removeArticle(id);
+  }
+
+  private scrollToArticleForm(): void {
+    globalThis.setTimeout(() => {
+      const firstField =
+        this.articleFormElement?.nativeElement.querySelector<HTMLElement>('#article-title, #article-text');
+
+      if (!firstField) {
+        return;
+      }
+
+      firstField.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+      firstField.focus({
+        preventScroll: true,
+      });
+    }, 150);
   }
 }

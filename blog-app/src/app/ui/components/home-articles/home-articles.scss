@@ -1,0 +1,15 @@
+.articles-list > .article-card:nth-child(odd) {
+  background-color: #fff5f0;
+}
+
+.articles-list > .article-card:nth-child(odd) .article-tag {
+  color: #e8572a;
+}
+
+.articles-list > .article-card:nth-child(even) {
+  background-color: #f0fff5;
+}
+
+.articles-list > .article-card:nth-child(even) .article-tag {
+  color: var(--color-accent-green);
+}

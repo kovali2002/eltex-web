@@ -1,10 +1,14 @@
 <header>
   <div class="nav-inner">
-    <span class="logo">Kovali-folio</span>
+    <a class="logo" routerLink="/">Kovali-folio</a>
     <nav>
       <ul>
-        <li><a href="#about" class="nav-active">About me</a></li>
-        <li><a href="blog.html">Blog</a></li>
+        <li>
+          <a routerLink="/" routerLinkActive="nav-active" [routerLinkActiveOptions]="{ exact: true }">
+            About me
+          </a>
+        </li>
+        <li><a routerLink="/blog" routerLinkActive="nav-active">Blog</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>

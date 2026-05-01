@@ -1,31 +1,47 @@
 <section class="article-form-wrap" [class.visible]="visible()">
   <form class="article-form" [formGroup]="form" (ngSubmit)="submit()">
-    <h2>Добавить статью</h2>
+    <h2>{{ formTitle() }}</h2>
 
     <div class="form-field">
+      @let isTitleControlInvalid = hasError('title');
+
       <label for="article-title">Заголовок</label>
       <input
         id="article-title"
         type="text"
+        class="form-control"
         formControlName="title"
         placeholder="Заголовок статьи"
-        [disabled]="isSubmitting()"
+        [class.form-control--invalid]="isTitleControlInvalid"
       />
+      @if (isTitleControlInvalid) {
+        @for (errorMessage of getControlErrors('title'); track $index) {
+          <span class="form-error">{{ errorMessage }}</span>
+        }
+      }
     </div>
 
     <div class="form-field">
+      @let isTextControlInvalid = hasError('text');
+
       <label for="article-text">Текст статьи</label>
       <textarea
         id="article-text"
+        class="form-control"
         formControlName="text"
         placeholder="Текст статьи"
-        [disabled]="isSubmitting()"
+        [class.form-control--invalid]="isTextControlInvalid"
       ></textarea>
+      @if (isTextControlInvalid) {
+        @for (errorMessage of getControlErrors('text'); track $index) {
+          <span class="form-error">{{ errorMessage }}</span>
+        }
+      }
     </div>
 
     <div class="form-buttons">
-      <button type="submit" class="btn-save" [disabled]="isSubmitting()">
-        {{ isSubmitting() ? 'Сохранение...' : 'Добавить' }}
+      <button type="submit" class="btn-save" [disabled]="isSubmitting() || form.invalid">
+        {{ submitButtonLabel() }}
       </button>
       <button type="button" class="btn-cancel" [disabled]="isSubmitting()" (click)="cancel.emit()">
         Отмена

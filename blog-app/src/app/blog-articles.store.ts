@@ -41,6 +41,21 @@ export class BlogArticlesStore {
     this.persist();
   }
 
+  public updateArticle(id: number, draft: NewArticleDraft): void {
+    this.articlesState.update((articles) =>
+      articles.map((article) =>
+        article.id === id
+          ? {
+              ...article,
+              title: draft.title,
+              text: draft.text,
+            }
+          : article,
+      ),
+    );
+    this.persist();
+  }
+
   public removeArticle(id: number): void {
     this.articlesState.update((articles) => articles.filter((article) => article.id !== id));
     this.persist();

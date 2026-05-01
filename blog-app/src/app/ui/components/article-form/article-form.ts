@@ -1,7 +1,13 @@
-import { effect } from '@angular/core';
-import { Component, input, output } from '@angular/core';
+import { Component, computed, effect, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NewArticleDraft } from '../../../types/article.types';
+import { ArticleFormMode, NewArticleDraft } from '../../../types/article.types';
+
+type ArticleFormControlName = 'title' | 'text';
+
+interface MinLengthValidationInfo {
+  requiredLength: number;
+  actualLength: number;
+}
 
 @Component({
   selector: 'app-article-form',
@@ -13,29 +19,79 @@ import { NewArticleDraft } from '../../../types/article.types';
 export class ArticleForm {
   public readonly isSubmitting = input(false);
   public readonly visible = input(false);
+  public readonly mode = input<ArticleFormMode>('create');
+  public readonly initialDraft = input<NewArticleDraft | null>(null);
   public readonly submitArticle = output<NewArticleDraft>();
   public readonly cancel = output<void>();
+  protected readonly formTitle = computed(() =>
+    this.mode() === 'edit' ? 'Изменить статью' : 'Добавить статью',
+  );
+  protected readonly submitButtonLabel = computed(() => {
+    if (this.isSubmitting()) {
+      return this.mode() === 'edit' ? 'Сохранение...' : 'Добавление...';
+    }
+
+    return this.mode() === 'edit' ? 'Сохранить' : 'Добавить';
+  });
 
   protected readonly form = new FormGroup({
     title: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(3)],
+      validators: [Validators.required, Validators.minLength(25)],
     }),
     text: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(3)],
+      validators: [Validators.required],
     }),
   });
 
   constructor() {
     effect(() => {
+      if (this.isSubmitting()) {
+        this.form.disable({ emitEvent: false });
+        return;
+      }
+
+      this.form.enable({ emitEvent: false });
+    });
+
+    effect(() => {
       if (!this.visible() && !this.isSubmitting()) {
-        this.form.reset({
-          title: '',
-          text: '',
-        });
+        this.resetForm();
       }
     });
+
+    effect(() => {
+      if (!this.visible()) {
+        return;
+      }
+
+      const draft = this.initialDraft();
+
+      this.form.reset({
+        title: draft?.title ?? '',
+        text: draft?.text ?? '',
+      });
+    });
+  }
+
+  protected hasError(controlName: ArticleFormControlName): boolean {
+    const control = this.form.get(controlName);
+
+    return Boolean(control?.invalid && control.touched);
+  }
+
+  protected getControlErrors(controlName: ArticleFormControlName): string[] {
+    const control = this.form.get(controlName);
+    const errors: Record<string, unknown> | null = control?.errors ?? null;
+
+    if (!errors) {
+      return [];
+    }
+
+    return Object.entries(errors).map(([errorCode, errorData]) =>
+      this.getErrorStr(controlName, errorCode, errorData),
+    );
   }
 
   protected submit(): void {
@@ -48,5 +104,31 @@ export class ArticleForm {
       title: this.form.controls.title.value.trim(),
       text: this.form.controls.text.value.trim(),
     });
+  }
+
+  private resetForm(): void {
+    this.form.reset({
+      title: '',
+      text: '',
+    });
+  }
+
+  private getErrorStr(
+    controlName: ArticleFormControlName,
+    errorCode: string,
+    errorData: unknown,
+  ): string {
+    switch (errorCode) {
+      case 'required':
+        return controlName === 'title' ? 'Заголовок обязателен' : 'Текст статьи обязателен';
+
+      case 'minlength': {
+        const { requiredLength, actualLength } = errorData as MinLengthValidationInfo;
+        return `Нужно еще ${requiredLength - actualLength} символов`;
+      }
+
+      default:
+        return 'Ошибка при заполнении поля';
+    }
   }
 }

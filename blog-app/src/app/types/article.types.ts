@@ -23,3 +23,5 @@ export interface NewArticleDraft {
   title: string;
   text: string;
 }
+
+export type ArticleFormMode = 'create' | 'edit';

@@ -1,5 +1,5 @@
 <aside class="admin-panel">
-  <button type="button" class="admin-btn" title="Создать статью" (click)="toggleForm()">
+  <button type="button" class="admin-btn" title="Создать статью" (click)="toggleCreateForm()">
     <img src="images/icon-add.png" alt="Создать статью" />
   </button>
   <button type="button" class="admin-btn" title="Показать статистику" (click)="toggleStats()">
@@ -8,7 +8,7 @@
 </aside>
 
 <dialog #statsDialog id="stats-dialog" (click)="handleDialogClick($event)">
-  <button type="button" class="dialog-close" (click)="closeStats()">✕</button>
+  <button type="button" class="dialog-close" (click)="closeStats()">&times;</button>
   <h2>Статистика страницы</h2>
   <div class="stats-grid">
     <div class="stats-card">
@@ -16,8 +16,8 @@
       <span>{{ totalCount() }}</span>
     </div>
     <div class="stats-card">
-      <p>Комментарии:</p>
-      <span>0</span>
+      <p>Добавлено вручную:</p>
+      <span>{{ userCreatedCount() }}</span>
     </div>
   </div>
 </dialog>
@@ -38,11 +38,15 @@
   [featuredArticle]="featuredArticle()"
   [articles]="regularArticles()"
   (deleteArticle)="deleteArticle($event)"
+  (editArticle)="startEditing($event)"
 />
 
 <app-article-form
+  #articleFormElement
   [visible]="showForm()"
   [isSubmitting]="isSubmitting()"
-  (submitArticle)="addArticle($event)"
+  [mode]="formMode()"
+  [initialDraft]="formDraft()"
+  (submitArticle)="submitArticle($event)"
   (cancel)="closeForm()"
 />

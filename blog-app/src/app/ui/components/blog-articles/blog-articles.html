@@ -11,9 +11,26 @@
 
   @if (featuredArticle(); as article) {
     <article class="blog-featured">
-      <button type="button" class="delete-btn" aria-label="Удалить статью" (click)="deleteArticle.emit(article.id)">
-        ✕
-      </button>
+      <div class="article-actions">
+        <button
+          type="button"
+          class="article-card-action edit-btn"
+          aria-label="Редактировать статью"
+          title="Редактировать статью"
+          (click)="editArticle.emit(article)"
+        >
+          &#9998;
+        </button>
+        <button
+          type="button"
+          class="article-card-action delete-btn"
+          aria-label="Удалить статью"
+          title="Удалить статью"
+          (click)="deleteArticle.emit(article.id)"
+        >
+          &times;
+        </button>
+      </div>
       <div class="blog-featured-image">
         <img [src]="article.image" alt="Статья" />
       </div>
@@ -31,9 +48,26 @@
     <div class="blog-grid">
       @for (article of articles(); track article.id) {
         <article class="blog-card">
-          <button type="button" class="delete-btn" aria-label="Удалить статью" (click)="deleteArticle.emit(article.id)">
-            ✕
-          </button>
+          <div class="article-actions">
+            <button
+              type="button"
+              class="article-card-action edit-btn"
+              aria-label="Редактировать статью"
+              title="Редактировать статью"
+              (click)="editArticle.emit(article)"
+            >
+              &#9998;
+            </button>
+            <button
+              type="button"
+              class="article-card-action delete-btn"
+              aria-label="Удалить статью"
+              title="Удалить статью"
+              (click)="deleteArticle.emit(article.id)"
+            >
+              &times;
+            </button>
+          </div>
           <div class="blog-card-image">
             <img [src]="article.image" alt="Статья" />
           </div>
@@ -46,7 +80,7 @@
     </div>
 
     <div class="browse-btn-wrap">
-      <a href="#" class="btn-outline">Next →</a>
+      <a href="#" class="btn-outline">Next &rarr;</a>
     </div>
   }
 </section>

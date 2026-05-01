@@ -1,7 +1,13 @@
-import { effect } from '@angular/core';
-import { Component, input, output } from '@angular/core';
+import { Component, computed, effect, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ArticleFormMode, NewArticleDraft } from '../../../types/article.types';
+
+type ArticleFormControlName = 'title' | 'text';
+
+interface MinLengthValidationInfo {
+  requiredLength: number;
+  actualLength: number;
+}
 
 @Component({
   selector: 'app-article-form',
@@ -17,6 +23,16 @@ export class ArticleForm {
   public readonly initialDraft = input<NewArticleDraft | null>(null);
   public readonly submitArticle = output<NewArticleDraft>();
   public readonly cancel = output<void>();
+  protected readonly formTitle = computed(() =>
+    this.mode() === 'edit' ? 'Изменить статью' : 'Добавить статью',
+  );
+  protected readonly submitButtonLabel = computed(() => {
+    if (this.isSubmitting()) {
+      return this.mode() === 'edit' ? 'Сохранение...' : 'Добавление...';
+    }
+
+    return this.mode() === 'edit' ? 'Сохранить' : 'Добавить';
+  });
 
   protected readonly form = new FormGroup({
     title: new FormControl('', {
@@ -28,8 +44,6 @@ export class ArticleForm {
       validators: [Validators.required],
     }),
   });
-  protected readonly titleControl = this.form.controls.title;
-  protected readonly textControl = this.form.controls.text;
 
   constructor() {
     effect(() => {
@@ -61,48 +75,23 @@ export class ArticleForm {
     });
   }
 
-  protected get formTitle(): string {
-    return this.mode() === 'edit' ? 'Изменить статью' : 'Добавить статью';
+  protected hasError(controlName: ArticleFormControlName): boolean {
+    const control = this.form.get(controlName);
+
+    return Boolean(control?.invalid && control.touched);
   }
 
-  protected get submitButtonLabel(): string {
-    if (this.isSubmitting()) {
-      return this.mode() === 'edit' ? 'Сохранение...' : 'Добавление...';
+  protected getControlErrors(controlName: ArticleFormControlName): string[] {
+    const control = this.form.get(controlName);
+    const errors: Record<string, unknown> | null = control?.errors ?? null;
+
+    if (!errors) {
+      return [];
     }
 
-    return this.mode() === 'edit' ? 'Сохранить' : 'Добавить';
-  }
-
-  protected isFieldInvalid(control: FormControl<string>): boolean {
-    return control.invalid && (control.touched || control.dirty);
-  }
-
-  protected getTitleError(): string {
-    if (!this.isFieldInvalid(this.titleControl)) {
-      return '';
-    }
-
-    if (this.titleControl.hasError('required')) {
-      return 'Укажите название статьи.';
-    }
-
-    if (this.titleControl.hasError('minlength')) {
-      return 'Минимальная длина названия статьи — 25 символов.';
-    }
-
-    return '';
-  }
-
-  protected getTextError(): string {
-    if (!this.isFieldInvalid(this.textControl)) {
-      return '';
-    }
-
-    if (this.textControl.hasError('required')) {
-      return 'Укажите текст статьи.';
-    }
-
-    return '';
+    return Object.entries(errors).map(([errorCode, errorData]) =>
+      this.getErrorStr(controlName, errorCode, errorData),
+    );
   }
 
   protected submit(): void {
@@ -122,5 +111,24 @@ export class ArticleForm {
       title: '',
       text: '',
     });
+  }
+
+  private getErrorStr(
+    controlName: ArticleFormControlName,
+    errorCode: string,
+    errorData: unknown,
+  ): string {
+    switch (errorCode) {
+      case 'required':
+        return controlName === 'title' ? 'Заголовок обязателен' : 'Текст статьи обязателен';
+
+      case 'minlength': {
+        const { requiredLength, actualLength } = errorData as MinLengthValidationInfo;
+        return `Нужно еще ${requiredLength - actualLength} символов`;
+      }
+
+      default:
+        return 'Ошибка при заполнении поля';
+    }
   }
 }

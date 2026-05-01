@@ -35,10 +35,13 @@
 </section>
 
 <app-blog-articles
-  [featuredArticle]="featuredArticle()"
-  [articles]="regularArticles()"
+  [articles]="articles()"
+  [activePage]="activePage()"
+  [pageSize]="pageSize()"
+  [totalCount]="totalCount()"
   (deleteArticle)="deleteArticle($event)"
   (editArticle)="startEditing($event)"
+  (pageChange)="changePage($event)"
 />
 
 <app-article-form

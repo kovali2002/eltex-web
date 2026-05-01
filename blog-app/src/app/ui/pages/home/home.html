@@ -1,81 +1,13 @@
-<section id="about">
-  <div class="hero-inner">
-    <div class="hero-text">
-      <h1>Привет! Я Григорий,<br />Junior Developer</h1>
-      <p>
-        Студент 3 курса СибГУТИ, начинающий разработчик из Бердска. Прошёл интенсивный курс
-        iOS-разработки, активно изучаю веб-технологии и backend.
-      </p>
-      <a href="#contact" class="hero-link">More about me <span>›</span></a>
-    </div>
-    <div class="hero-image">
-      <div class="hero-image-wrap">
-        <img src="images/avatar.png" alt="Фото" />
-        <img src="images/blogs-circle.png" class="blogs-circle-img" alt="My blogs" />
-      </div>
-    </div>
-  </div>
-</section>
+<app-home-hero />
 
-<app-home-articles [articles]="articles" />
+@if (articles().length) {
+  <app-home-articles [articles]="articles()" />
+}
 
-<section id="skills">
-  <h2>My skills</h2>
-  <ul class="skills-grid">
-    @for (skill of skills; track skill) {
-      <li>{{ skill }}</li>
-    }
-  </ul>
-</section>
+<app-home-skills [skills]="skills" />
 
-<section id="work">
-  <div class="work-inner">
-    <div class="work-left">
-      <h2>My work</h2>
-      <p>Студент СибГУТИ, прохожу курсы и развиваюсь в IT. Ищу первую стажировку или работу.</p>
-    </div>
-    <div class="work-right">
-      @for (item of workItems; track item.title) {
-        <div class="work-item">
-          <img [src]="item.icon" alt="icon" class="work-icon" />
-          <div class="work-info">
-            <span class="work-period">{{ item.period }}</span>
-            <h4>{{ item.title }}</h4>
-            <p>{{ item.description }}</p>
-          </div>
-        </div>
-      }
-    </div>
-  </div>
-</section>
+<app-home-work [workItems]="workItems" />
 
-<section id="hobby">
-  <div class="hobby-header">
-    <h2>Hobby projects</h2>
-    <p>
-      Duis nisi do exercitation in irure aliqua commodo nisi eu id reprehenderit dolore fugiat
-      consectetur irure labore est ea.
-    </p>
-  </div>
-  <div class="hobby-grid">
-    @for (project of hobbyProjects; track project.label) {
-      <div class="hobby-card">
-        <img [src]="project.image" [alt]="project.label" />
-        <div class="hobby-overlay">
-          <p>{{ project.label }}</p>
-        </div>
-      </div>
-    }
+<app-home-education [educationItems]="educationItems" />
 
-    <div class="hobby-stack">
-      @for (item of hobbyStack; track item.label) {
-        <div class="hobby-card">
-          <img [src]="item.image" [alt]="item.label" />
-          <div class="hobby-overlay">
-            <p>{{ item.label }}</p>
-          </div>
-        </div>
-      }
-    </div>
-  </div>
-</section>
+<app-home-hobby [projects]="hobbyProjects" [stack]="hobbyStack" />

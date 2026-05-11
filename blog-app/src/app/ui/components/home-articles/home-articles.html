@@ -1,7 +1,7 @@
 <section id="articles">
   <div class="articles-list">
     @for (article of articles(); track article.title) {
-      <article class="article-card">
+      <article class="article-card" [routerLink]="['/blog', article.id]" tabindex="0">
         <div class="article-card-text">
           <span class="article-tag">{{ article.tag }}</span>
           <h3>{{ article.title }}</h3>

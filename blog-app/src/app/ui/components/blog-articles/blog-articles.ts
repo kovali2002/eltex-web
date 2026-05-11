@@ -1,9 +1,13 @@
 import { Component, computed, input, output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 import { BlogArticle } from '../../../types/article.types';
 
 @Component({
   selector: 'app-blog-articles',
   standalone: true,
+  imports: [RouterLink, MatButtonModule, MatIconModule],
   templateUrl: './blog-articles.html',
   styleUrl: './blog-articles.scss',
 })
@@ -29,5 +33,17 @@ export class BlogArticles {
     }
 
     this.pageChange.emit(page);
+  }
+
+  protected handleEditClick(event: MouseEvent, article: BlogArticle): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.editArticle.emit(article);
+  }
+
+  protected handleDeleteClick(event: MouseEvent, articleId: number): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.deleteArticle.emit(articleId);
   }
 }

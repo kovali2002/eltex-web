@@ -1,0 +1,129 @@
+<section class="post-page">
+  <a mat-button routerLink="/blog" class="post-back-link">
+    <mat-icon fontSet="material-symbols-outlined">arrow_back</mat-icon>
+    Back
+  </a>
+
+  @if (isLoaded() && article(); as post) {
+    <mat-card class="post-card">
+      <img mat-card-image [src]="post.image" [alt]="post.title" />
+      <mat-card-header>
+        <mat-card-title>{{ post.title }}</mat-card-title>
+        <mat-card-subtitle>
+          {{ post.tag }} · <time [attr.datetime]="post.isoDate">{{ post.dateLabel }}</time>
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ post.text || 'Описание появится после редактирования статьи.' }}</p>
+
+        <div class="rating-row" aria-label="Рейтинг статьи">
+          <span>Рейтинг статьи</span>
+          <button
+            mat-icon-button
+            type="button"
+            aria-label="Уменьшить рейтинг статьи"
+            (click)="changeArticleRating(post.id, post.rating - 1)"
+          >
+            <mat-icon fontSet="material-symbols-outlined">remove</mat-icon>
+          </button>
+          <strong>{{ post.rating }}</strong>
+          <button
+            mat-icon-button
+            type="button"
+            aria-label="Увеличить рейтинг статьи"
+            (click)="changeArticleRating(post.id, post.rating + 1)"
+          >
+            <mat-icon fontSet="material-symbols-outlined">add</mat-icon>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="comments-card">
+      <mat-card-header>
+        <mat-card-title>Комментарии</mat-card-title>
+        <mat-card-subtitle>{{ comments().length }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        @if (comments().length) {
+          <div class="comments-list">
+            @for (comment of comments(); track comment.id) {
+              <article class="comment-item">
+                <div class="comment-main">
+                  <div>
+                    <h3>{{ comment.author }}</h3>
+                    <time [attr.datetime]="comment.isoDate">{{ comment.dateLabel }}</time>
+                  </div>
+                  <p>{{ comment.text }}</p>
+                </div>
+
+                <div class="rating-row comment-rating" aria-label="Рейтинг комментария">
+                  <button
+                    mat-icon-button
+                    type="button"
+                    aria-label="Уменьшить рейтинг комментария"
+                    (click)="changeCommentRating(comment, comment.rating - 1)"
+                  >
+                    <mat-icon fontSet="material-symbols-outlined">thumb_down</mat-icon>
+                  </button>
+                  <strong>{{ comment.rating }}</strong>
+                  <button
+                    mat-icon-button
+                    type="button"
+                    aria-label="Увеличить рейтинг комментария"
+                    (click)="changeCommentRating(comment, comment.rating + 1)"
+                  >
+                    <mat-icon fontSet="material-symbols-outlined">thumb_up</mat-icon>
+                  </button>
+                </div>
+              </article>
+              <mat-divider />
+            }
+          </div>
+        } @else {
+          <p class="comments-empty">Комментариев пока нет</p>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="comment-form-card">
+      <mat-card-header>
+        <mat-card-title>Добавить комментарий</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="commentForm" class="comment-form" (ngSubmit)="addComment(post.id)">
+          <mat-form-field appearance="outline">
+            <mat-label>Имя</mat-label>
+            <input matInput formControlName="author" />
+            @if (hasError('author')) {
+              <mat-error>Введите имя</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Комментарий</mat-label>
+            <textarea matInput formControlName="text" rows="4"></textarea>
+            @if (hasError('text')) {
+              <mat-error>Введите комментарий</mat-error>
+            }
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="commentForm.invalid">
+            <mat-icon fontSet="material-symbols-outlined">send</mat-icon>
+            Добавить
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  } @else if (isLoaded()) {
+    <mat-card class="post-not-found">
+      <mat-card-title>Пост не найден</mat-card-title>
+      <mat-card-content>
+        <p>Статья могла быть удалена или ссылка устарела.</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <a mat-button routerLink="/blog">Back</a>
+      </mat-card-actions>
+    </mat-card>
+  }
+</section>

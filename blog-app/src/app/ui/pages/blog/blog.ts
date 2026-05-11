@@ -1,4 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { take } from 'rxjs';
 import { ArticlesStoreService } from '../../../services/articles/articles-store.service';
 import { ARTICLES_SERVICE } from '../../../services/articles/articles-service.token';
@@ -9,7 +11,7 @@ import { BlogArticles } from '../../components/blog-articles/blog-articles';
 @Component({
   selector: 'app-blog',
   standalone: true,
-  imports: [ArticleForm, BlogArticles],
+  imports: [ArticleForm, BlogArticles, MatButtonModule, MatIconModule],
   templateUrl: './blog.html',
   styleUrl: './blog.scss',
 })

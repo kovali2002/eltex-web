@@ -10,6 +10,7 @@ export interface BlogArticle {
   theme: ArticleTheme;
   image: string;
   isUserCreated: boolean;
+  rating: number;
 }
 
 export interface HomeArticlePreview {
@@ -25,3 +26,18 @@ export interface NewArticleDraft {
 }
 
 export type ArticleFormMode = 'create' | 'edit';
+
+export interface BlogComment {
+  id: number;
+  articleId: number;
+  author: string;
+  text: string;
+  dateLabel: string;
+  isoDate: string;
+  rating: number;
+}
+
+export interface NewCommentDraft {
+  author: string;
+  text: string;
+}

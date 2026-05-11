@@ -11,6 +11,7 @@ export const INITIAL_ARTICLES: BlogArticle[] = [
     theme: 'red',
     image: 'images/Selection.png',
     isUserCreated: false,
+    rating: 5,
   },
   {
     id: 2,
@@ -22,6 +23,7 @@ export const INITIAL_ARTICLES: BlogArticle[] = [
     theme: 'green',
     image: 'images/Selection.png',
     isUserCreated: false,
+    rating: 4,
   },
   {
     id: 3,
@@ -33,6 +35,7 @@ export const INITIAL_ARTICLES: BlogArticle[] = [
     theme: 'neutral',
     image: 'images/Selection.png',
     isUserCreated: false,
+    rating: 3,
   },
   {
     id: 4,
@@ -44,6 +47,7 @@ export const INITIAL_ARTICLES: BlogArticle[] = [
     theme: 'neutral',
     image: 'images/Selection.png',
     isUserCreated: false,
+    rating: 4,
   },
   {
     id: 5,
@@ -55,6 +59,7 @@ export const INITIAL_ARTICLES: BlogArticle[] = [
     theme: 'neutral',
     image: 'images/Selection.png',
     isUserCreated: false,
+    rating: 5,
   },
   {
     id: 6,
@@ -66,6 +71,7 @@ export const INITIAL_ARTICLES: BlogArticle[] = [
     theme: 'green',
     image: 'images/Selection.png',
     isUserCreated: false,
+    rating: 4,
   },
   {
     id: 7,
@@ -77,5 +83,6 @@ export const INITIAL_ARTICLES: BlogArticle[] = [
     theme: 'green',
     image: 'images/Selection.png',
     isUserCreated: false,
+    rating: 4,
   },
 ];

@@ -74,6 +74,7 @@ export class ArticlesService implements ArticlesServiceInterface {
       theme: 'neutral',
       image: 'images/Selection.png',
       isUserCreated: true,
+      rating: 0,
     };
   }
 
@@ -136,7 +137,7 @@ export class ArticlesService implements ArticlesServiceInterface {
 }
 
 function cloneArticles(articles: ReadonlyArray<BlogArticle>): BlogArticle[] {
-  return articles.map((article) => ({ ...article }));
+  return articles.map((article) => ({ ...article, rating: article.rating ?? 0 }));
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -158,7 +159,8 @@ function isBlogArticleArray(value: unknown): value is BlogArticle[] {
         typeof article.tag === 'string' &&
         isArticleTheme(article.theme) &&
         typeof article.image === 'string' &&
-        typeof article.isUserCreated === 'boolean',
+        typeof article.isUserCreated === 'boolean' &&
+        (typeof article.rating === 'number' || article.rating === undefined),
     )
   );
 }

@@ -1,4 +1,6 @@
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
 
 * {
   box-sizing: border-box;
@@ -10,7 +12,8 @@ html {
   scroll-behavior: auto;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -31,6 +34,7 @@ app-header,
 app-footer,
 app-home,
 app-blog,
+app-post,
 app-home-articles,
 app-blog-articles,
 app-article-form {
@@ -81,7 +85,9 @@ nav ul li a {
   font-size: 15px;
   font-weight: 400;
   color: var(--color-dark);
-  transition: color 0.2s ease, font-weight 0.2s ease;
+  transition:
+    color 0.2s ease,
+    font-weight 0.2s ease;
 }
 
 nav ul li a:hover {
@@ -250,7 +256,9 @@ nav ul li a:hover {
   font-size: 14px;
   font-weight: 500;
   color: var(--color-accent-green);
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .btn-outline:hover {
@@ -759,11 +767,8 @@ footer {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.admin-btn img {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
+.admin-btn mat-icon {
+  color: #ffffff;
 }
 
 .article-form-wrap {
@@ -868,7 +873,9 @@ footer {
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .btn-cancel:hover {
@@ -952,18 +959,28 @@ dialog h2 {
 }
 
 .article-card-action {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   color: white;
   border: none;
   border-radius: 50%;
   font-size: 14px;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.3s ease, background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.3s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.article-card-action mat-icon {
+  font-size: 18px;
+  line-height: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 .article-card-action:hover {

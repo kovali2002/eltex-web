@@ -1,9 +1,21 @@
 <aside class="admin-panel">
-  <button type="button" class="admin-btn" title="Создать статью" (click)="toggleCreateForm()">
-    <img src="images/icon-add.png" alt="Создать статью" />
+  <button
+    mat-icon-button
+    type="button"
+    class="admin-btn"
+    title="Создать статью"
+    (click)="toggleCreateForm()"
+  >
+    <mat-icon fontSet="material-symbols-outlined">add</mat-icon>
   </button>
-  <button type="button" class="admin-btn" title="Показать статистику" (click)="toggleStats()">
-    <img src="images/icon-stats.png" alt="Статистика" />
+  <button
+    mat-icon-button
+    type="button"
+    class="admin-btn"
+    title="Показать статистику"
+    (click)="toggleStats()"
+  >
+    <mat-icon fontSet="material-symbols-outlined">bar_chart</mat-icon>
   </button>
 </aside>
 

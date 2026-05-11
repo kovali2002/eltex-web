@@ -10,25 +10,27 @@
   }
 
   @if (featuredArticle(); as article) {
-    <article class="blog-featured">
+    <article class="blog-featured" [routerLink]="['/blog', article.id]" tabindex="0">
       <div class="article-actions">
         <button
+          mat-icon-button
           type="button"
           class="article-card-action edit-btn"
           aria-label="Редактировать статью"
           title="Редактировать статью"
-          (click)="editArticle.emit(article)"
+          (click)="handleEditClick($event, article)"
         >
-          &#9998;
+          <mat-icon fontSet="material-symbols-outlined">edit</mat-icon>
         </button>
         <button
+          mat-icon-button
           type="button"
           class="article-card-action delete-btn"
           aria-label="Удалить статью"
           title="Удалить статью"
-          (click)="deleteArticle.emit(article.id)"
+          (click)="handleDeleteClick($event, article.id)"
         >
-          &times;
+          <mat-icon fontSet="material-symbols-outlined">delete</mat-icon>
         </button>
       </div>
       <div class="blog-featured-image">
@@ -47,25 +49,27 @@
   @if (regularArticles().length) {
     <div class="blog-grid">
       @for (article of regularArticles(); track article.id) {
-        <article class="blog-card">
+        <article class="blog-card" [routerLink]="['/blog', article.id]" tabindex="0">
           <div class="article-actions">
             <button
+              mat-icon-button
               type="button"
               class="article-card-action edit-btn"
               aria-label="Редактировать статью"
               title="Редактировать статью"
-              (click)="editArticle.emit(article)"
+              (click)="handleEditClick($event, article)"
             >
-              &#9998;
+              <mat-icon fontSet="material-symbols-outlined">edit</mat-icon>
             </button>
             <button
+              mat-icon-button
               type="button"
               class="article-card-action delete-btn"
               aria-label="Удалить статью"
               title="Удалить статью"
-              (click)="deleteArticle.emit(article.id)"
+              (click)="handleDeleteClick($event, article.id)"
             >
-              &times;
+              <mat-icon fontSet="material-symbols-outlined">delete</mat-icon>
             </button>
           </div>
           <div class="blog-card-image">
@@ -83,6 +87,7 @@
   @if (totalPages() > 1) {
     <nav class="pagination" aria-label="Пагинация статей">
       <button
+        mat-stroked-button
         type="button"
         class="pagination-btn"
         [disabled]="activePage() === 1"
@@ -93,6 +98,7 @@
 
       @for (page of pages(); track page) {
         <button
+          mat-stroked-button
           type="button"
           class="pagination-btn pagination-page"
           [class.pagination-page--active]="page === activePage()"
@@ -104,6 +110,7 @@
       }
 
       <button
+        mat-stroked-button
         type="button"
         class="pagination-btn"
         [disabled]="activePage() === totalPages()"

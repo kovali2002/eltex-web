@@ -3,7 +3,7 @@
     <span class="loader"></span>
   </div>
 
-  @if (!featuredArticle()) {
+  @if (!articles().length) {
     <div class="no-articles-state">
       <p>Нет статей</p>
     </div>
@@ -44,9 +44,9 @@
     </article>
   }
 
-  @if (articles().length) {
+  @if (regularArticles().length) {
     <div class="blog-grid">
-      @for (article of articles(); track article.id) {
+      @for (article of regularArticles(); track article.id) {
         <article class="blog-card">
           <div class="article-actions">
             <button
@@ -78,9 +78,39 @@
         </article>
       }
     </div>
+  }
 
-    <div class="browse-btn-wrap">
-      <a href="#" class="btn-outline">Next &rarr;</a>
-    </div>
+  @if (totalPages() > 1) {
+    <nav class="pagination" aria-label="Пагинация статей">
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="activePage() === 1"
+        (click)="selectPage(activePage() - 1)"
+      >
+        Back
+      </button>
+
+      @for (page of pages(); track page) {
+        <button
+          type="button"
+          class="pagination-btn pagination-page"
+          [class.pagination-page--active]="page === activePage()"
+          [attr.aria-current]="page === activePage() ? 'page' : null"
+          (click)="selectPage(page)"
+        >
+          {{ page }}
+        </button>
+      }
+
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="activePage() === totalPages()"
+        (click)="selectPage(activePage() + 1)"
+      >
+        Next &rarr;
+      </button>
+    </nav>
   }
 </section>

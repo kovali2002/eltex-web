@@ -1,6 +1,8 @@
-import { Component, ElementRef, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { take } from 'rxjs';
+import { ArticlesStoreService } from '../../../services/articles/articles-store.service';
+import { ARTICLES_SERVICE } from '../../../services/articles/articles-service.token';
 import { ArticleFormMode, BlogArticle, NewArticleDraft } from '../../../types/article.types';
-import { BlogArticlesStore } from '../../../blog-articles.store';
 import { ArticleForm } from '../../components/article-form/article-form';
 import { BlogArticles } from '../../components/blog-articles/blog-articles';
 
@@ -11,18 +13,20 @@ import { BlogArticles } from '../../components/blog-articles/blog-articles';
   templateUrl: './blog.html',
   styleUrl: './blog.scss',
 })
-export class Blog {
+export class Blog implements OnInit {
   @ViewChild('statsDialog') private statsDialog?: ElementRef<HTMLDialogElement>;
-  @ViewChild('articleFormElement', { read: ElementRef }) private articleFormElement?: ElementRef<HTMLElement>;
+  @ViewChild('articleFormElement', { read: ElementRef })
+  private articleFormElement?: ElementRef<HTMLElement>;
 
-  private readonly blogArticlesStore = inject(BlogArticlesStore);
+  private readonly blogArticlesPageSize = 7;
+  private readonly articlesService = inject(ARTICLES_SERVICE);
+  private readonly articlesStore = inject(ArticlesStoreService);
 
-  protected readonly featuredArticle = this.blogArticlesStore.featuredArticle;
-  protected readonly regularArticles = this.blogArticlesStore.regularArticles;
-  protected readonly totalCount = computed(() => this.blogArticlesStore.articles().length);
-  protected readonly userCreatedCount = computed(
-    () => this.blogArticlesStore.articles().filter((article) => article.isUserCreated).length,
-  );
+  protected readonly articles = this.articlesStore.articles;
+  protected readonly activePage = this.articlesStore.activePage;
+  protected readonly pageSize = this.articlesStore.pageSize;
+  protected readonly totalCount = this.articlesStore.totalCount;
+  protected readonly userCreatedCount = this.articlesStore.userCreatedCount;
   protected readonly showForm = signal(false);
   protected readonly isSubmitting = signal(false);
   protected readonly editingArticle = signal<BlogArticle | null>(null);
@@ -41,6 +45,19 @@ export class Blog {
       text: article.text,
     };
   });
+
+  public ngOnInit(): void {
+    const activePage =
+      this.articlesStore.pageSize() === this.blogArticlesPageSize
+        ? this.articlesStore.activePage()
+        : 1;
+
+    if (this.articlesStore.hasSnapshot(activePage, this.blogArticlesPageSize)) {
+      return;
+    }
+
+    this.loadArticles(activePage);
+  }
 
   protected toggleCreateForm(): void {
     if (this.isSubmitting()) {
@@ -103,15 +120,21 @@ export class Blog {
     const articleId = this.editingArticle()?.id ?? null;
 
     globalThis.setTimeout(() => {
-      if (articleId === null) {
-        this.blogArticlesStore.addArticle(draft);
-      } else {
-        this.blogArticlesStore.updateArticle(articleId, draft);
-      }
+      const request = {
+        page: articleId === null ? 1 : this.activePage(),
+        pageSize: this.blogArticlesPageSize,
+      };
+      const response$ =
+        articleId === null
+          ? this.articlesService.addArticle(draft, request)
+          : this.articlesService.updateArticle(articleId, draft, request);
 
-      this.isSubmitting.set(false);
-      this.editingArticle.set(null);
-      this.showForm.set(false);
+      response$.pipe(take(1)).subscribe((response) => {
+        this.articlesStore.savePage(response);
+        this.isSubmitting.set(false);
+        this.editingArticle.set(null);
+        this.showForm.set(false);
+      });
     }, 1000);
   }
 
@@ -120,13 +143,34 @@ export class Blog {
       this.closeForm();
     }
 
-    this.blogArticlesStore.removeArticle(id);
+    this.articlesService
+      .deleteArticle(id, {
+        page: this.activePage(),
+        pageSize: this.blogArticlesPageSize,
+      })
+      .pipe(take(1))
+      .subscribe((response) => this.articlesStore.savePage(response));
+  }
+
+  protected changePage(page: number): void {
+    this.loadArticles(page);
+  }
+
+  private loadArticles(page: number): void {
+    this.articlesService
+      .getArticles({
+        page,
+        pageSize: this.blogArticlesPageSize,
+      })
+      .pipe(take(1))
+      .subscribe((response) => this.articlesStore.savePage(response));
   }
 
   private scrollToArticleForm(): void {
     globalThis.setTimeout(() => {
-      const firstField =
-        this.articleFormElement?.nativeElement.querySelector<HTMLElement>('#article-title, #article-text');
+      const firstField = this.articleFormElement?.nativeElement.querySelector<HTMLElement>(
+        '#article-title, #article-text',
+      );
 
       if (!firstField) {
         return;

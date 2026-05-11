@@ -1,15 +1,29 @@
-import { Component } from '@angular/core';
-import { HomeArticlePreview } from '../../../types/article.types';
+import { Component, OnInit, inject } from '@angular/core';
+import { take } from 'rxjs';
+import { ArticlesStoreService } from '../../../services/articles/articles-store.service';
+import { ARTICLES_SERVICE } from '../../../services/articles/articles-service.token';
+import { HomeEducation } from '../../components/home-education/home-education';
+import { HomeHero } from '../../components/home-hero/home-hero';
+import { HomeHobby } from '../../components/home-hobby/home-hobby';
 import { HomeArticles } from '../../components/home-articles/home-articles';
+import { HomeSkills } from '../../components/home-skills/home-skills';
+import { HomeWork } from '../../components/home-work/home-work';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [HomeArticles],
+  imports: [HomeHero, HomeArticles, HomeSkills, HomeWork, HomeEducation, HomeHobby],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
-export class Home {
+export class Home implements OnInit {
+  private readonly homeArticlesPage = 1;
+  private readonly homeArticlesPageSize = 2;
+  private readonly articlesService = inject(ARTICLES_SERVICE);
+  private readonly articlesStore = inject(ArticlesStoreService);
+
+  protected readonly articles = this.articlesStore.articles;
+
   protected readonly skills = [
     'Swift / UIKit / SwiftUI',
     'HTML / CSS',
@@ -20,12 +34,6 @@ export class Home {
   ];
 
   protected readonly workItems = [
-    {
-      icon: 'images/work-icon-1.png',
-      period: 'СибГУТИ — (2022 - н.в.)',
-      title: 'Студент ИВТ',
-      description: 'Изучаю Java, алгоритмы, визуальное программирование, веб-разработку.',
-    },
     {
       icon: 'images/work-icon-2.png',
       period: 'ШИФТ ЦФТ — (Апрель - Июнь 2023)',
@@ -40,18 +48,16 @@ export class Home {
     },
   ];
 
-  protected readonly articles: HomeArticlePreview[] = [
+  protected readonly educationItems = [
     {
-      tag: 'iOS',
-      title: 'Как я начал изучать iOS-разработку',
-      text: 'Расскажу о своём опыте прохождения интенсива ШИФТ в ЦФТ: как проходило обучение, что изучали и что получилось в итоге.',
-      image: 'images/Selection.png',
+      period: '2022 - н.в.',
+      title: 'СибГУТИ, Информатика и вычислительная техника',
+      description: 'Изучаю Java, алгоритмы, визуальное программирование, веб-разработку.',
     },
     {
-      tag: 'Git',
-      title: 'Git для начинающих: основные команды',
-      text: 'Разбираем базовые команды Git которые нужны каждый день: init, add, commit, push, pull, branch и merge.',
-      image: 'images/Selection.png',
+      period: 'Апрель - Июнь 2023',
+      title: 'Интенсив ШИФТ ЦФТ по iOS-разработке',
+      description: '80 часов практики: Swift, UIKit, SwiftUI, MVC/MVVM. Получен сертификат.',
     },
   ];
 
@@ -64,4 +70,18 @@ export class Home {
     { image: 'images/Selection.png', label: 'Aurora OS' },
     { image: 'images/Selection.png', label: 'Java проект' },
   ];
+
+  public ngOnInit(): void {
+    if (this.articlesStore.hasSnapshot(this.homeArticlesPage, this.homeArticlesPageSize)) {
+      return;
+    }
+
+    this.articlesService
+      .getArticles({
+        page: this.homeArticlesPage,
+        pageSize: this.homeArticlesPageSize,
+      })
+      .pipe(take(1))
+      .subscribe((response) => this.articlesStore.savePage(response));
+  }
 }

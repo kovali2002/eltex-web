@@ -1,0 +1,18 @@
+<section id="education">
+  <div class="education-inner">
+    <div class="education-heading">
+      <h2>Education</h2>
+      <p>Учёба и интенсивы, которые сформировали мою базу в разработке.</p>
+    </div>
+
+    <div class="education-list">
+      @for (item of educationItems(); track item.title) {
+        <article class="education-item">
+          <span>{{ item.period }}</span>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>

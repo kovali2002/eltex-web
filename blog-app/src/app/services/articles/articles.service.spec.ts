@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
-import { ARTICLES_SERVICE } from './articles-service.token';
 import { ArticlesServiceInterface } from './articles-service.interface';
+import { ArticlesService } from './articles.service';
 
 describe('ArticlesService', () => {
   let service: ArticlesServiceInterface;
@@ -10,7 +10,7 @@ describe('ArticlesService', () => {
     localStorage.clear();
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ARTICLES_SERVICE);
+    service = TestBed.inject(ArticlesService);
   });
 
   afterEach(() => {
@@ -36,6 +36,8 @@ describe('ArticlesService', () => {
         {
           title: 'Обновленный заголовок статьи для проверки сохранения',
           text: 'Обновленный текст статьи',
+          categoryName: 'Проверка',
+          imageFile: null,
         },
         { page: 1, pageSize: 7 },
       ),

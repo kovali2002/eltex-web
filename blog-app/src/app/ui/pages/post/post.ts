@@ -54,9 +54,9 @@ export class Post implements OnInit {
 
   public ngOnInit(): void {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      const articleId = Number(params.get('id'));
+      const articleId = params.get('id');
 
-      if (!Number.isFinite(articleId)) {
+      if (!articleId) {
         this.postStore.savePostDetails({ article: null, comments: [] });
         this.title.setTitle('Пост не найден | Kovali-folio');
         this.isLoaded.set(true);
@@ -67,7 +67,7 @@ export class Post implements OnInit {
     });
   }
 
-  protected addComment(articleId: number): void {
+  protected addComment(articleId: string): void {
     if (this.commentForm.invalid) {
       this.commentForm.markAllAsTouched();
       return;
@@ -87,7 +87,7 @@ export class Post implements OnInit {
       });
   }
 
-  protected changeArticleRating(articleId: number, rating: number): void {
+  protected changeArticleRating(articleId: string, rating: number): void {
     this.postService
       .changeArticleRating(articleId, rating)
       .pipe(take(1))
@@ -107,7 +107,7 @@ export class Post implements OnInit {
     return Boolean(control?.invalid && control.touched);
   }
 
-  private loadPost(articleId: number): void {
+  private loadPost(articleId: string): void {
     this.isLoaded.set(false);
     this.postService
       .getPostWithComments(articleId)

@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, from, map, of } from 'rxjs';
 import { INITIAL_ARTICLES } from '../../articles.seed';
 import { ArticleTheme, BlogArticle, NewArticleDraft } from '../../types/article.types';
 import {
@@ -18,38 +18,52 @@ export class ArticlesService implements ArticlesServiceInterface {
     return of(this.buildPage(this.readArticles(), request));
   }
 
+  public getArticle(id: string): Observable<BlogArticle | null> {
+    return of(this.readArticles().find((article) => article.id === id) ?? null);
+  }
+
   public addArticle(
     draft: NewArticleDraft,
     request: ArticlesPageRequest,
   ): Observable<ArticlesPageResponse> {
-    const articles = [this.createArticle(draft), ...this.readArticles()];
+    return from(this.createArticle(draft)).pipe(
+      map((article) => {
+        const articles = [article, ...this.readArticles()];
 
-    this.writeArticles(articles);
+        this.writeArticles(articles);
 
-    return of(this.buildPage(articles, request));
+        return this.buildPage(articles, request);
+      }),
+    );
   }
 
   public updateArticle(
-    id: number,
+    id: string,
     draft: NewArticleDraft,
     request: ArticlesPageRequest,
   ): Observable<ArticlesPageResponse> {
-    const articles = this.readArticles().map((article) =>
-      article.id === id
-        ? {
-            ...article,
-            title: draft.title,
-            text: draft.text,
-          }
-        : article,
+    return from(resolveLocalImage(draft.imageFile)).pipe(
+      map((image) => {
+        const articles = this.readArticles().map((article) =>
+          article.id === id
+            ? {
+                ...article,
+                title: draft.title,
+                text: draft.text,
+                tag: draft.categoryName,
+                image: image ?? article.image,
+              }
+            : article,
+        );
+
+        this.writeArticles(articles);
+
+        return this.buildPage(articles, request);
+      }),
     );
-
-    this.writeArticles(articles);
-
-    return of(this.buildPage(articles, request));
   }
 
-  public deleteArticle(id: number, request: ArticlesPageRequest): Observable<ArticlesPageResponse> {
+  public deleteArticle(id: string, request: ArticlesPageRequest): Observable<ArticlesPageResponse> {
     const articles = this.readArticles().filter((article) => article.id !== id);
 
     this.writeArticles(articles);
@@ -57,11 +71,11 @@ export class ArticlesService implements ArticlesServiceInterface {
     return of(this.buildPage(articles, request));
   }
 
-  private createArticle(draft: NewArticleDraft): BlogArticle {
+  private createArticle(draft: NewArticleDraft): Promise<BlogArticle> {
     const createdAt = new Date();
 
-    return {
-      id: Date.now(),
+    return resolveLocalImage(draft.imageFile).then((image) => ({
+      id: String(Date.now()),
       title: draft.title,
       text: draft.text,
       dateLabel: createdAt.toLocaleDateString('en-US', {
@@ -70,12 +84,12 @@ export class ArticlesService implements ArticlesServiceInterface {
         year: 'numeric',
       }),
       isoDate: createdAt.toISOString().slice(0, 10),
-      tag: 'New',
+      tag: draft.categoryName,
       theme: 'neutral',
-      image: 'images/Selection.png',
+      image: image ?? 'images/Selection.png',
       isUserCreated: true,
       rating: 0,
-    };
+    }));
   }
 
   private readArticles(): BlogArticle[] {
@@ -137,7 +151,11 @@ export class ArticlesService implements ArticlesServiceInterface {
 }
 
 function cloneArticles(articles: ReadonlyArray<BlogArticle>): BlogArticle[] {
-  return articles.map((article) => ({ ...article, rating: article.rating ?? 0 }));
+  return articles.map((article) => ({
+    ...article,
+    id: String(article.id),
+    rating: article.rating ?? 0,
+  }));
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -151,7 +169,7 @@ function isBlogArticleArray(value: unknown): value is BlogArticle[] {
       (article) =>
         typeof article === 'object' &&
         article !== null &&
-        typeof article.id === 'number' &&
+        (typeof article.id === 'string' || typeof article.id === 'number') &&
         typeof article.title === 'string' &&
         typeof article.text === 'string' &&
         typeof article.dateLabel === 'string' &&
@@ -163,6 +181,20 @@ function isBlogArticleArray(value: unknown): value is BlogArticle[] {
         (typeof article.rating === 'number' || article.rating === undefined),
     )
   );
+}
+
+function resolveLocalImage(file: File | null): Promise<string | null> {
+  if (!file) {
+    return Promise.resolve(null);
+  }
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.addEventListener('load', () => resolve(String(reader.result)));
+    reader.addEventListener('error', () => reject(reader.error));
+    reader.readAsDataURL(file);
+  });
 }
 
 function isArticleTheme(value: unknown): value is ArticleTheme {

@@ -1,7 +1,7 @@
 export type ArticleTheme = 'red' | 'green' | 'neutral';
 
 export interface BlogArticle {
-  id: number;
+  id: string;
   title: string;
   text: string;
   dateLabel: string;
@@ -23,13 +23,15 @@ export interface HomeArticlePreview {
 export interface NewArticleDraft {
   title: string;
   text: string;
+  categoryName: string;
+  imageFile: File | null;
 }
 
 export type ArticleFormMode = 'create' | 'edit';
 
 export interface BlogComment {
-  id: number;
-  articleId: number;
+  id: string;
+  articleId: string;
   author: string;
   text: string;
   dateLabel: string;
@@ -40,4 +42,9 @@ export interface BlogComment {
 export interface NewCommentDraft {
   author: string;
   text: string;
+}
+
+export interface BlogCategory {
+  id: string;
+  name: string;
 }

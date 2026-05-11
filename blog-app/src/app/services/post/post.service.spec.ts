@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
-import { POST_SERVICE } from './post-service.token';
 import { PostServiceInterface } from './post-service.interface';
+import { PostService } from './post.service';
 
 describe('PostService', () => {
   let service: PostServiceInterface;
@@ -10,7 +10,7 @@ describe('PostService', () => {
     localStorage.clear();
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({});
-    service = TestBed.inject(POST_SERVICE);
+    service = TestBed.inject(PostService);
   });
 
   afterEach(() => {
@@ -18,31 +18,31 @@ describe('PostService', () => {
   });
 
   it('should return post with comments', async () => {
-    const details = await firstValueFrom(service.getPostWithComments(1));
+    const details = await firstValueFrom(service.getPostWithComments('1'));
 
-    expect(details.article?.id).toBe(1);
+    expect(details.article?.id).toBe('1');
     expect(details.comments).toEqual([]);
   });
 
   it('should add comment and change ratings', async () => {
     await firstValueFrom(
-      service.addComment(1, {
+      service.addComment('1', {
         author: 'Григорий',
         text: 'Полезная статья',
       }),
     );
 
-    const details = await firstValueFrom(service.getPostWithComments(1));
+    const details = await firstValueFrom(service.getPostWithComments('1'));
     const comment = details.comments[0];
 
     expect(comment.author).toBe('Григорий');
     expect(comment.text).toBe('Полезная статья');
 
-    const withCommentRating = await firstValueFrom(service.changeCommentRating(1, comment.id, 4));
+    const withCommentRating = await firstValueFrom(service.changeCommentRating('1', comment.id, 4));
 
     expect(withCommentRating.comments[0].rating).toBe(4);
 
-    const withArticleRating = await firstValueFrom(service.changeArticleRating(1, 5));
+    const withArticleRating = await firstValueFrom(service.changeArticleRating('1', 5));
 
     expect(withArticleRating.article?.rating).toBe(5);
   });

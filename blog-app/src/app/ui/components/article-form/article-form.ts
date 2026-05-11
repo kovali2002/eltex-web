@@ -1,8 +1,12 @@
-import { Component, computed, effect, input, output } from '@angular/core';
+import { Component, computed, effect, input, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ArticleFormMode, NewArticleDraft } from '../../../types/article.types';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { ArticleFormMode, BlogCategory, NewArticleDraft } from '../../../types/article.types';
 
-type ArticleFormControlName = 'title' | 'text';
+type ArticleFormControlName = 'title' | 'text' | 'categoryName';
 
 interface MinLengthValidationInfo {
   requiredLength: number;
@@ -12,7 +16,13 @@ interface MinLengthValidationInfo {
 @Component({
   selector: 'app-article-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+  ],
   templateUrl: './article-form.html',
   styleUrl: './article-form.scss',
 })
@@ -21,6 +31,7 @@ export class ArticleForm {
   public readonly visible = input(false);
   public readonly mode = input<ArticleFormMode>('create');
   public readonly initialDraft = input<NewArticleDraft | null>(null);
+  public readonly categories = input<ReadonlyArray<BlogCategory>>([]);
   public readonly submitArticle = output<NewArticleDraft>();
   public readonly cancel = output<void>();
   protected readonly formTitle = computed(() =>
@@ -43,7 +54,13 @@ export class ArticleForm {
       nonNullable: true,
       validators: [Validators.required],
     }),
+    categoryName: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    imageFile: new FormControl<File | null>(null),
   });
+  protected readonly selectedImageName = signal('');
 
   constructor() {
     effect(() => {
@@ -71,8 +88,31 @@ export class ArticleForm {
       this.form.reset({
         title: draft?.title ?? '',
         text: draft?.text ?? '',
+        categoryName: draft?.categoryName ?? '',
+        imageFile: null,
       });
+      this.selectedImageName.set('');
     });
+  }
+
+  protected filteredCategories(): ReadonlyArray<BlogCategory> {
+    const searchValue = this.form.controls.categoryName.value.trim().toLowerCase();
+
+    if (!searchValue) {
+      return this.categories();
+    }
+
+    return this.categories().filter((category) =>
+      category.name.toLowerCase().includes(searchValue),
+    );
+  }
+
+  protected handleImageChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+
+    this.form.controls.imageFile.setValue(file);
+    this.selectedImageName.set(file?.name ?? '');
   }
 
   protected hasError(controlName: ArticleFormControlName): boolean {
@@ -103,6 +143,8 @@ export class ArticleForm {
     this.submitArticle.emit({
       title: this.form.controls.title.value.trim(),
       text: this.form.controls.text.value.trim(),
+      categoryName: this.form.controls.categoryName.value.trim(),
+      imageFile: this.form.controls.imageFile.value,
     });
   }
 
@@ -110,7 +152,10 @@ export class ArticleForm {
     this.form.reset({
       title: '',
       text: '',
+      categoryName: '',
+      imageFile: null,
     });
+    this.selectedImageName.set('');
   }
 
   private getErrorStr(
@@ -120,7 +165,15 @@ export class ArticleForm {
   ): string {
     switch (errorCode) {
       case 'required':
-        return controlName === 'title' ? 'Заголовок обязателен' : 'Текст статьи обязателен';
+        if (controlName === 'title') {
+          return 'Заголовок обязателен';
+        }
+
+        if (controlName === 'categoryName') {
+          return 'Категория обязательна';
+        }
+
+        return 'Текст статьи обязателен';
 
       case 'minlength': {
         const { requiredLength, actualLength } = errorData as MinLengthValidationInfo;

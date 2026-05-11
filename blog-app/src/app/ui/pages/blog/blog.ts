@@ -1,10 +1,16 @@
 import { Component, ElementRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { take } from 'rxjs';
+import { switchMap, take } from 'rxjs';
 import { ArticlesStoreService } from '../../../services/articles/articles-store.service';
 import { ARTICLES_SERVICE } from '../../../services/articles/articles-service.token';
-import { ArticleFormMode, BlogArticle, NewArticleDraft } from '../../../types/article.types';
+import { CATEGORIES_SERVICE } from '../../../services/categories/categories-service.token';
+import {
+  ArticleFormMode,
+  BlogArticle,
+  BlogCategory,
+  NewArticleDraft,
+} from '../../../types/article.types';
 import { ArticleForm } from '../../components/article-form/article-form';
 import { BlogArticles } from '../../components/blog-articles/blog-articles';
 
@@ -23,8 +29,10 @@ export class Blog implements OnInit {
   private readonly blogArticlesPageSize = 7;
   private readonly articlesService = inject(ARTICLES_SERVICE);
   private readonly articlesStore = inject(ArticlesStoreService);
+  private readonly categoriesService = inject(CATEGORIES_SERVICE);
 
   protected readonly articles = this.articlesStore.articles;
+  protected readonly categories = signal<ReadonlyArray<BlogCategory>>([]);
   protected readonly activePage = this.articlesStore.activePage;
   protected readonly pageSize = this.articlesStore.pageSize;
   protected readonly totalCount = this.articlesStore.totalCount;
@@ -45,10 +53,14 @@ export class Blog implements OnInit {
     return {
       title: article.title,
       text: article.text,
+      categoryName: article.tag,
+      imageFile: null,
     };
   });
 
   public ngOnInit(): void {
+    this.loadCategories();
+
     const activePage =
       this.articlesStore.pageSize() === this.blogArticlesPageSize
         ? this.articlesStore.activePage()
@@ -128,11 +140,16 @@ export class Blog implements OnInit {
       };
       const response$ =
         articleId === null
-          ? this.articlesService.addArticle(draft, request)
-          : this.articlesService.updateArticle(articleId, draft, request);
+          ? this.categoriesService
+              .ensureCategory(draft.categoryName)
+              .pipe(switchMap(() => this.articlesService.addArticle(draft, request)))
+          : this.categoriesService
+              .ensureCategory(draft.categoryName)
+              .pipe(switchMap(() => this.articlesService.updateArticle(articleId, draft, request)));
 
       response$.pipe(take(1)).subscribe((response) => {
         this.articlesStore.savePage(response);
+        this.loadCategories();
         this.isSubmitting.set(false);
         this.editingArticle.set(null);
         this.showForm.set(false);
@@ -140,7 +157,7 @@ export class Blog implements OnInit {
     }, 1000);
   }
 
-  protected deleteArticle(id: number): void {
+  protected deleteArticle(id: string): void {
     if (this.editingArticle()?.id === id) {
       this.closeForm();
     }
@@ -166,6 +183,13 @@ export class Blog implements OnInit {
       })
       .pipe(take(1))
       .subscribe((response) => this.articlesStore.savePage(response));
+  }
+
+  private loadCategories(): void {
+    this.categoriesService
+      .getCategories()
+      .pipe(take(1))
+      .subscribe((categories) => this.categories.set(categories));
   }
 
   private scrollToArticleForm(): void {

@@ -16,7 +16,7 @@ export class BlogArticles {
   public readonly activePage = input.required<number>();
   public readonly pageSize = input.required<number>();
   public readonly totalCount = input.required<number>();
-  public readonly deleteArticle = output<number>();
+  public readonly deleteArticle = output<string>();
   public readonly editArticle = output<BlogArticle>();
   public readonly pageChange = output<number>();
 
@@ -41,7 +41,7 @@ export class BlogArticles {
     this.editArticle.emit(article);
   }
 
-  protected handleDeleteClick(event: MouseEvent, articleId: number): void {
+  protected handleDeleteClick(event: MouseEvent, articleId: string): void {
     event.preventDefault();
     event.stopPropagation();
     this.deleteArticle.emit(articleId);

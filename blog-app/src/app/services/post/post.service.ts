@@ -11,11 +11,11 @@ export class PostService implements PostServiceInterface {
   private readonly commentsStorageKey = 'kovali-blog-comments';
   private readonly platformId = inject(PLATFORM_ID);
 
-  public getPostWithComments(articleId: number): Observable<PostDetails> {
+  public getPostWithComments(articleId: string): Observable<PostDetails> {
     return of(this.buildPostDetails(articleId));
   }
 
-  public addComment(articleId: number, draft: NewCommentDraft): Observable<PostDetails> {
+  public addComment(articleId: string, draft: NewCommentDraft): Observable<PostDetails> {
     const comments = [
       this.createComment(articleId, draft),
       ...this.readComments().filter((comment) => comment.articleId === articleId),
@@ -28,8 +28,8 @@ export class PostService implements PostServiceInterface {
   }
 
   public changeCommentRating(
-    articleId: number,
-    commentId: number,
+    articleId: string,
+    commentId: string,
     rating: number,
   ): Observable<PostDetails> {
     const comments = this.readComments().map((comment) =>
@@ -46,7 +46,7 @@ export class PostService implements PostServiceInterface {
     return of(this.buildPostDetails(articleId));
   }
 
-  public changeArticleRating(articleId: number, rating: number): Observable<PostDetails> {
+  public changeArticleRating(articleId: string, rating: number): Observable<PostDetails> {
     const articles = this.readArticles().map((article) =>
       article.id === articleId
         ? {
@@ -61,7 +61,7 @@ export class PostService implements PostServiceInterface {
     return of(this.buildPostDetails(articleId));
   }
 
-  private buildPostDetails(articleId: number): PostDetails {
+  private buildPostDetails(articleId: string): PostDetails {
     const article = this.readArticles().find((item) => item.id === articleId) ?? null;
     const comments = this.readComments().filter((comment) => comment.articleId === articleId);
 
@@ -71,11 +71,11 @@ export class PostService implements PostServiceInterface {
     };
   }
 
-  private createComment(articleId: number, draft: NewCommentDraft): BlogComment {
+  private createComment(articleId: string, draft: NewCommentDraft): BlogComment {
     const createdAt = new Date();
 
     return {
-      id: Date.now(),
+      id: String(Date.now()),
       articleId,
       author: draft.author,
       text: draft.text,
@@ -163,11 +163,19 @@ export class PostService implements PostServiceInterface {
 }
 
 function cloneArticles(articles: ReadonlyArray<BlogArticle>): BlogArticle[] {
-  return articles.map((article) => ({ ...article, rating: article.rating ?? 0 }));
+  return articles.map((article) => ({
+    ...article,
+    id: String(article.id),
+    rating: article.rating ?? 0,
+  }));
 }
 
 function cloneComments(comments: ReadonlyArray<BlogComment>): BlogComment[] {
-  return comments.map((comment) => ({ ...comment }));
+  return comments.map((comment) => ({
+    ...comment,
+    id: String(comment.id),
+    articleId: String(comment.articleId),
+  }));
 }
 
 function clampRating(rating: number): number {
@@ -181,7 +189,7 @@ function isBlogArticleArray(value: unknown): value is BlogArticle[] {
       (article) =>
         typeof article === 'object' &&
         article !== null &&
-        typeof article.id === 'number' &&
+        (typeof article.id === 'string' || typeof article.id === 'number') &&
         typeof article.title === 'string' &&
         typeof article.text === 'string' &&
         typeof article.dateLabel === 'string' &&
@@ -206,8 +214,8 @@ function isBlogCommentArray(value: unknown): value is BlogComment[] {
       (comment) =>
         typeof comment === 'object' &&
         comment !== null &&
-        typeof comment.id === 'number' &&
-        typeof comment.articleId === 'number' &&
+        (typeof comment.id === 'string' || typeof comment.id === 'number') &&
+        (typeof comment.articleId === 'string' || typeof comment.articleId === 'number') &&
         typeof comment.author === 'string' &&
         typeof comment.text === 'string' &&
         typeof comment.dateLabel === 'string' &&

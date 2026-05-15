@@ -1,5 +1,6 @@
-<section class="article-form-wrap" [class.visible]="visible()">
-  <form class="article-form" [formGroup]="form" (ngSubmit)="submit()">
+@if (visible()) {
+<section class="article-form-wrap visible">
+  <form class="article-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
     <h2>{{ formTitle() }}</h2>
 
     <div class="form-field">
@@ -18,6 +19,46 @@
         @for (errorMessage of getControlErrors('title'); track $index) {
           <span class="form-error">{{ errorMessage }}</span>
         }
+      }
+    </div>
+
+    <div class="form-field">
+      @let isCategoryControlInvalid = hasError('categoryName');
+
+      <mat-form-field appearance="outline">
+        <mat-label>Категория</mat-label>
+        <input
+          matInput
+          type="text"
+          formControlName="categoryName"
+          placeholder="Начните вводить категорию"
+          [matAutocomplete]="categoriesAutocomplete"
+        />
+        <mat-icon matSuffix fontSet="material-symbols-outlined">category</mat-icon>
+        <mat-autocomplete #categoriesAutocomplete="matAutocomplete">
+          @for (category of filteredCategories(); track category.id) {
+            <mat-option [value]="category.name">{{ category.name }}</mat-option>
+          }
+        </mat-autocomplete>
+        @if (isCategoryControlInvalid) {
+          @for (errorMessage of getControlErrors('categoryName'); track $index) {
+            <mat-error>{{ errorMessage }}</mat-error>
+          }
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="form-field">
+      <label for="article-image">Изображение</label>
+      <input
+        id="article-image"
+        type="file"
+        class="form-control"
+        accept="image/jpeg,image/jpg,image/png,image/gif,image/svg+xml"
+        (change)="handleImageChange($event)"
+      />
+      @if (selectedImageName()) {
+        <span class="form-hint">{{ selectedImageName() }}</span>
       }
     </div>
 
@@ -49,3 +90,4 @@
     </div>
   </form>
 </section>
+}

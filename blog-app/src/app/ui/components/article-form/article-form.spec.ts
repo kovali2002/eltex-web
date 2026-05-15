@@ -24,12 +24,17 @@ describe('ArticleForm', () => {
     expect(submitButton.disabled).toBe(true);
 
     const titleInput = fixture.nativeElement.querySelector('#article-title') as HTMLInputElement;
+    const categoryInput = fixture.nativeElement.querySelector(
+      'input[formcontrolname="categoryName"]',
+    ) as HTMLInputElement;
     const textInput = fixture.nativeElement.querySelector('#article-text') as HTMLTextAreaElement;
 
     titleInput.value = 'Короткий заголовок';
     titleInput.dispatchEvent(new Event('input'));
     textInput.value = 'Текст статьи';
     textInput.dispatchEvent(new Event('input'));
+    categoryInput.value = 'Angular';
+    categoryInput.dispatchEvent(new Event('input'));
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -51,6 +56,8 @@ describe('ArticleForm', () => {
     fixture.componentRef.setInput('initialDraft', {
       title: 'Заголовок статьи достаточной длины для редактирования',
       text: 'Обновленный текст статьи',
+      categoryName: 'Angular',
+      imageFile: null,
     });
     fixture.detectChanges();
     await fixture.whenStable();
@@ -59,10 +66,14 @@ describe('ArticleForm', () => {
     const submitButton = fixture.nativeElement.querySelector('.btn-save') as HTMLButtonElement;
     const titleInput = fixture.nativeElement.querySelector('#article-title') as HTMLInputElement;
     const textInput = fixture.nativeElement.querySelector('#article-text') as HTMLTextAreaElement;
+    const categoryInput = fixture.nativeElement.querySelector(
+      'input[formcontrolname="categoryName"]',
+    ) as HTMLInputElement;
 
     expect(title.textContent).toContain('Изменить статью');
     expect(submitButton.textContent).toContain('Сохранить');
     expect(titleInput.value).toBe('Заголовок статьи достаточной длины для редактирования');
     expect(textInput.value).toBe('Обновленный текст статьи');
+    expect(categoryInput.value).toBe('Angular');
   });
 });

@@ -16,14 +16,15 @@ export interface ArticlesPageResponse {
 
 export interface ArticlesServiceInterface {
   getArticles(request: ArticlesPageRequest): Observable<ArticlesPageResponse>;
+  getArticle(id: string): Observable<BlogArticle | null>;
   addArticle(
     draft: NewArticleDraft,
     request: ArticlesPageRequest,
   ): Observable<ArticlesPageResponse>;
   updateArticle(
-    id: number,
+    id: string,
     draft: NewArticleDraft,
     request: ArticlesPageRequest,
   ): Observable<ArticlesPageResponse>;
-  deleteArticle(id: number, request: ArticlesPageRequest): Observable<ArticlesPageResponse>;
+  deleteArticle(id: string, request: ArticlesPageRequest): Observable<ArticlesPageResponse>;
 }

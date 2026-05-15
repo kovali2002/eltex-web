@@ -2,7 +2,7 @@ import { BlogArticle } from './types/article.types';
 
 export const INITIAL_ARTICLES: BlogArticle[] = [
   {
-    id: 1,
+    id: '1',
     title: 'Как я начал изучать iOS-разработку и прошёл интенсив ШИФТ',
     text: 'Расскажу о своём опыте прохождения интенсива ШИФТ в ЦФТ: как проходило обучение, что изучали и что получилось в итоге.',
     dateLabel: 'Jan 10, 2025',
@@ -14,7 +14,7 @@ export const INITIAL_ARTICLES: BlogArticle[] = [
     rating: 5,
   },
   {
-    id: 2,
+    id: '2',
     title: 'Git для начинающих: основные команды',
     text: '',
     dateLabel: 'Feb 5, 2025',
@@ -26,7 +26,7 @@ export const INITIAL_ARTICLES: BlogArticle[] = [
     rating: 4,
   },
   {
-    id: 3,
+    id: '3',
     title: 'Первые шаги в HTML: структура страницы',
     text: '',
     dateLabel: 'Mar 1, 2025',
@@ -38,7 +38,7 @@ export const INITIAL_ARTICLES: BlogArticle[] = [
     rating: 3,
   },
   {
-    id: 4,
+    id: '4',
     title: 'Семантические теги HTML: зачем они нужны',
     text: '',
     dateLabel: 'Mar 5, 2025',
@@ -50,7 +50,7 @@ export const INITIAL_ARTICLES: BlogArticle[] = [
     rating: 4,
   },
   {
-    id: 5,
+    id: '5',
     title: 'Aurora OS: опыт бета-тестирования',
     text: '',
     dateLabel: 'Mar 8, 2025',
@@ -62,7 +62,7 @@ export const INITIAL_ARTICLES: BlogArticle[] = [
     rating: 5,
   },
   {
-    id: 6,
+    id: '6',
     title: 'CSS Flexbox: как выравнивать элементы',
     text: '',
     dateLabel: 'Mar 10, 2025',
@@ -74,7 +74,7 @@ export const INITIAL_ARTICLES: BlogArticle[] = [
     rating: 4,
   },
   {
-    id: 7,
+    id: '7',
     title: 'CSS Grid: сетки для вёрстки',
     text: '',
     dateLabel: 'Mar 15, 2025',

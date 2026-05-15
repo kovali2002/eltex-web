@@ -7,12 +7,12 @@ export interface PostDetails {
 }
 
 export interface PostServiceInterface {
-  getPostWithComments(articleId: number): Observable<PostDetails>;
-  addComment(articleId: number, draft: NewCommentDraft): Observable<PostDetails>;
+  getPostWithComments(articleId: string): Observable<PostDetails>;
+  addComment(articleId: string, draft: NewCommentDraft): Observable<PostDetails>;
   changeCommentRating(
-    articleId: number,
-    commentId: number,
+    articleId: string,
+    commentId: string,
     rating: number,
   ): Observable<PostDetails>;
-  changeArticleRating(articleId: number, rating: number): Observable<PostDetails>;
+  changeArticleRating(articleId: string, rating: number): Observable<PostDetails>;
 }

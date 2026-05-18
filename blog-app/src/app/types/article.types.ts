@@ -24,6 +24,7 @@ export interface NewArticleDraft {
   title: string;
   text: string;
   categoryName: string;
+  categoryId?: string;
   imageFile: File | null;
 }
 

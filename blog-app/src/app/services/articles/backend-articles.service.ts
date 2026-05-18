@@ -1,29 +1,15 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map, switchMap } from 'rxjs';
+import { Observable, catchError, forkJoin, map, of, switchMap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { CATEGORIES_SERVICE } from '../categories/categories-service.token';
 import { BlogArticle, NewArticleDraft } from '../../types/article.types';
+import { CATEGORIES_SERVICE } from '../categories/categories-service.token';
+import { BackendArticle, buildCategoryLookup, mapBackendArticle } from './backend-article.mapper';
 import {
   ArticlesPageRequest,
   ArticlesPageResponse,
   ArticlesServiceInterface,
 } from './articles-service.interface';
-
-interface BackendArticle {
-  id: string;
-  title: string;
-  content: string;
-  imgSrc: string | null;
-  categoryId: string | null;
-  category?: {
-    id: string;
-    name: string;
-  } | null;
-  rating: number;
-  createdAt: string;
-  updatedAt: string;
-}
 
 interface BackendArticlesResponse {
   items: BackendArticle[];
@@ -44,28 +30,44 @@ export class BackendArticlesService implements ArticlesServiceInterface {
       .set('limit', request.pageSize)
       .set('cumulative', false);
 
-    return this.http.get<BackendArticlesResponse>(this.baseUrl, { params }).pipe(
-      map((response) => ({
-        articles: response.items.map(mapArticle),
-        totalCount: response.total,
-        userCreatedCount: response.total,
-        page: response.page,
-        pageSize: response.limit,
-      })),
+    return forkJoin({
+      response: this.http.get<BackendArticlesResponse>(this.baseUrl, { params }),
+      categories: this.categoriesService.getCategories(),
+    }).pipe(
+      map(({ response, categories }) => {
+        const categoryLookup = buildCategoryLookup(categories);
+
+        return {
+          articles: response.items.map((article) => mapBackendArticle(article, categoryLookup)),
+          totalCount: response.total,
+          userCreatedCount: response.total,
+          page: response.page,
+          pageSize: response.limit,
+        };
+      }),
     );
   }
 
   public getArticle(id: string): Observable<BlogArticle | null> {
-    return this.http.get<BackendArticle>(`${this.baseUrl}/${id}`).pipe(map(mapArticle));
+    return forkJoin({
+      article: this.http
+        .get<BackendArticle>(`${this.baseUrl}/${id}`)
+        .pipe(catchError(() => of(null))),
+      categories: this.categoriesService.getCategories(),
+    }).pipe(
+      map(({ article, categories }) =>
+        article ? mapBackendArticle(article, buildCategoryLookup(categories)) : null,
+      ),
+    );
   }
 
   public addArticle(
     draft: NewArticleDraft,
     request: ArticlesPageRequest,
   ): Observable<ArticlesPageResponse> {
-    return this.categoriesService.ensureCategory(draft.categoryName).pipe(
-      switchMap((category) =>
-        this.http.post<BackendArticle>(this.baseUrl, buildArticleFormData(draft, category.id)),
+    return this.resolveCategoryId(draft).pipe(
+      switchMap((categoryId) =>
+        this.http.post<BackendArticle>(this.baseUrl, buildArticleFormData(draft, categoryId)),
       ),
       switchMap(() => this.getArticles(request)),
     );
@@ -76,11 +78,11 @@ export class BackendArticlesService implements ArticlesServiceInterface {
     draft: NewArticleDraft,
     request: ArticlesPageRequest,
   ): Observable<ArticlesPageResponse> {
-    return this.categoriesService.ensureCategory(draft.categoryName).pipe(
-      switchMap((category) =>
+    return this.resolveCategoryId(draft).pipe(
+      switchMap((categoryId) =>
         this.http.patch<BackendArticle>(
           `${this.baseUrl}/${id}`,
-          buildArticleFormData(draft, category.id),
+          buildArticleFormData(draft, categoryId),
         ),
       ),
       switchMap(() => this.getArticles(request)),
@@ -91,6 +93,18 @@ export class BackendArticlesService implements ArticlesServiceInterface {
     return this.http
       .delete<BackendArticle>(`${this.baseUrl}/${id}`)
       .pipe(switchMap(() => this.getArticles(request)));
+  }
+
+  private resolveCategoryId(draft: NewArticleDraft): Observable<string> {
+    const categoryId = draft.categoryId?.trim();
+
+    if (categoryId) {
+      return of(categoryId);
+    }
+
+    return this.categoriesService
+      .ensureCategory(draft.categoryName)
+      .pipe(map((category) => category.id));
   }
 }
 
@@ -106,30 +120,4 @@ function buildArticleFormData(draft: NewArticleDraft, categoryId: string): FormD
   }
 
   return formData;
-}
-
-function mapArticle(article: BackendArticle): BlogArticle {
-  const createdAt = new Date(article.createdAt);
-  const isoDate = Number.isNaN(createdAt.getTime())
-    ? new Date().toISOString().slice(0, 10)
-    : createdAt.toISOString().slice(0, 10);
-
-  return {
-    id: article.id,
-    title: article.title,
-    text: article.content,
-    dateLabel: Number.isNaN(createdAt.getTime())
-      ? ''
-      : createdAt.toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-        }),
-    isoDate,
-    tag: article.category?.name ?? 'New',
-    theme: 'neutral',
-    image: article.imgSrc ? `${environment.apiBaseUrl}${article.imgSrc}` : 'images/Selection.png',
-    isUserCreated: true,
-    rating: article.rating ?? 0,
-  };
 }

@@ -132,29 +132,38 @@ export class Blog implements OnInit {
   protected submitArticle(draft: NewArticleDraft): void {
     this.isSubmitting.set(true);
     const articleId = this.editingArticle()?.id ?? null;
+    const request = {
+      page: articleId === null ? 1 : this.activePage(),
+      pageSize: this.blogArticlesPageSize,
+    };
 
-    globalThis.setTimeout(() => {
-      const request = {
-        page: articleId === null ? 1 : this.activePage(),
-        pageSize: this.blogArticlesPageSize,
-      };
-      const response$ =
-        articleId === null
-          ? this.categoriesService
-              .ensureCategory(draft.categoryName)
-              .pipe(switchMap(() => this.articlesService.addArticle(draft, request)))
-          : this.categoriesService
-              .ensureCategory(draft.categoryName)
-              .pipe(switchMap(() => this.articlesService.updateArticle(articleId, draft, request)));
+    const response$ = this.categoriesService.ensureCategory(draft.categoryName).pipe(
+      switchMap((category) => {
+        const draftWithCategory: NewArticleDraft = {
+          ...draft,
+          categoryName: category.name,
+          categoryId: category.id,
+        };
 
-      response$.pipe(take(1)).subscribe((response) => {
+        return articleId === null
+          ? this.articlesService.addArticle(draftWithCategory, request)
+          : this.articlesService.updateArticle(articleId, draftWithCategory, request);
+      }),
+    );
+
+    response$.pipe(take(1)).subscribe({
+      next: (response) => {
         this.articlesStore.savePage(response);
         this.loadCategories();
         this.isSubmitting.set(false);
         this.editingArticle.set(null);
         this.showForm.set(false);
-      });
-    }, 1000);
+      },
+      error: (error: unknown) => {
+        console.error('Failed to save article', error);
+        this.isSubmitting.set(false);
+      },
+    });
   }
 
   protected deleteArticle(id: string): void {

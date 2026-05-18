@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - lesson_11
+      - lesson_16
       - main
   workflow_dispatch:
 
@@ -34,13 +35,14 @@ jobs:
         run: npm ci
 
       - name: Build Angular app
-        run: npm run build
+        run: npm run build -- --configuration production
 
       - name: Deploy to gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
           npm run deploy --
+          --no-build
           --no-silent
           --repo=https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           --branch=gh-pages
